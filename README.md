@@ -1,2 +1,2 @@
 # open-columns
-Serverside processing table/grid rendered in react. 
+Lightweight serverside processing table/grid for scrolling through large datasets.  Written in TS.
