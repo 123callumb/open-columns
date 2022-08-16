@@ -17,6 +17,6 @@
         "test/**/*"
     ],
     "files": [
-        "src/open-columns.ts"
+        "src/index.ts"
     ],
 }
