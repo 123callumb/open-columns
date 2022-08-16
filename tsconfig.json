@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "typeRoots": [
+            "@types", 
+            "./node_modules/@types"
+        ],
+        "declaration": true,
+        "noImplicitAny": true,
+        "moduleResolution": "node",
+        "sourceMap": false,
+        "outDir": "dist",
+        "esModuleInterop": true,
+        "baseUrl": "./"
+    },
+    "exclude": [
+        "node_modules",
+        "test/**/*"
+    ],
+    "files": [
+        "src/open-columns.ts"
+    ],
+}

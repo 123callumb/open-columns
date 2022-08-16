@@ -1,0 +1,34 @@
+{
+  "name": "open-columns",
+  "version": "0.0.1",
+  "description": "Grid/table package for handling large datasets",
+  "main": "./dist/open-columns.js",
+  "types": "./dist/open-columns.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/123callumb/open-columns.git"
+  },
+  "author": "Callum Beckwith",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/123callumb/open-columns/issues"
+  },
+  "homepage": "https://github.com/123callumb/open-columns#readme",
+  "devDependencies": {
+    "@babel/core": "^7.18.10",
+    "babel-loader": "^8.2.5",
+    "sass": "^1.54.4",
+    "sass-loader": "^13.0.2",
+    "style-loader": "^3.3.1",
+    "ts-loader": "^9.3.1",
+    "typescript": "^4.7.4",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0"
+  }
+}
