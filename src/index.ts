@@ -1,7 +1,8 @@
-import './themes/default/index.scss';
+import './style/index.scss';
+import OpenColumn from './OpenColumn/OpenColumn';
 
-export default class OpenColumn {
-    constructor(){
-        console.log("New open column initialised :)");
-    }
+export default OpenColumn;
+
+export {
+    
 }

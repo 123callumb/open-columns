@@ -5,7 +5,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const defaultConfig = {
     target: 'web',
     entry: {
-        index: './src/index.ts'
+        'open-columns': './src/index.ts'
     },
     output: {
         path: path.join(__dirname, './dist'),
@@ -18,7 +18,7 @@ const defaultConfig = {
         ignored: /node_modules/
     },
     plugins: [new MiniCssExtractPlugin({
-        filename: '[name].min.css'
+        filename: 'open-columns.default.css'
     })],
     module: {
         rules: [

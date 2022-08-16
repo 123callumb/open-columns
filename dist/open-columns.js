@@ -20,23 +20,33 @@ return /******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./src/OpenColumn/OpenColumn.ts":
+/*!**************************************!*\
+  !*** ./src/OpenColumn/OpenColumn.ts ***!
+  \**************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+eval("\n\nexports.__esModule = true;\n\nvar OpenColumn =\n/** @class */\nfunction () {\n  function OpenColumn() {\n    console.log(\"New open column initialised :)\");\n  }\n\n  return OpenColumn;\n}();\n\nexports[\"default\"] = OpenColumn;\n\n//# sourceURL=webpack://open-columns/./src/OpenColumn/OpenColumn.ts?");
+
+/***/ }),
+
 /***/ "./src/index.ts":
 /*!**********************!*\
   !*** ./src/index.ts ***!
   \**********************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-eval("\n\nexports.__esModule = true;\n\n__webpack_require__(/*! ./themes/default/index.scss */ \"./src/themes/default/index.scss\");\n\nvar OpenColumn =\n/** @class */\nfunction () {\n  function OpenColumn() {\n    console.log(\"New open column initialised :)\");\n  }\n\n  return OpenColumn;\n}();\n\nexports[\"default\"] = OpenColumn;\n\n//# sourceURL=webpack://open-columns/./src/index.ts?");
+eval("\n\nvar __importDefault = this && this.__importDefault || function (mod) {\n  return mod && mod.__esModule ? mod : {\n    \"default\": mod\n  };\n};\n\nexports.__esModule = true;\n\n__webpack_require__(/*! ./style/index.scss */ \"./src/style/index.scss\");\n\nvar OpenColumn_1 = __importDefault(__webpack_require__(/*! ./OpenColumn/OpenColumn */ \"./src/OpenColumn/OpenColumn.ts\"));\n\nexports[\"default\"] = OpenColumn_1[\"default\"];\n\n//# sourceURL=webpack://open-columns/./src/index.ts?");
 
 /***/ }),
 
-/***/ "./src/themes/default/index.scss":
-/*!***************************************!*\
-  !*** ./src/themes/default/index.scss ***!
-  \***************************************/
+/***/ "./src/style/index.scss":
+/*!******************************!*\
+  !*** ./src/style/index.scss ***!
+  \******************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n// extracted by mini-css-extract-plugin\n\n\n//# sourceURL=webpack://open-columns/./src/themes/default/index.scss?");
+eval("__webpack_require__.r(__webpack_exports__);\n// extracted by mini-css-extract-plugin\n\n\n//# sourceURL=webpack://open-columns/./src/style/index.scss?");
 
 /***/ })
 
@@ -60,7 +70,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n// extracted by mini-css-extr
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
-/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
@@ -82,7 +92,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n// extracted by mini-css-extr
 /******/ 	
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	// This entry module can't be inlined because the eval devtool is used.
+/******/ 	// This entry module is referenced by other modules so it can't be inlined
 /******/ 	var __webpack_exports__ = __webpack_require__("./src/index.ts");
 /******/ 	
 /******/ 	return __webpack_exports__;

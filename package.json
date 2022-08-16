@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Grid/table package for handling large datasets",
   "main": "./dist/open-columns.js",
-  "types": "./dist/open-columns.d.ts",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
