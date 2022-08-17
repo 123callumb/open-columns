@@ -29,16 +29,20 @@ export default class OCScrollBody {
     private OnScroll(e: WheelEvent){
         e.preventDefault();
 
-        console.log(`X: ${e.deltaX} Y: ${e.deltaY} Z: ${e.deltaZ}`);
+        // console.log(`X: ${e.deltaX} Y: ${e.deltaY} Z: ${e.deltaZ}`);
         this.Scroll(e.deltaX, e.deltaY);
     }
 
     public Scroll(x: number, y: number){
         const scrollRect = this._dom.ScrollBody.getBoundingClientRect();
         const elRect = this._testElement.getBoundingClientRect();
-        const newX = (scrollRect.x - elRect.x) + x;
-        const newY = (scrollRect.y - elRect.y) + y;
-        console.log(`new X ${newX} new Y: ${newY}`);
+        const newX = (elRect.x - scrollRect.x) + x;
+        const newY = (elRect.y - scrollRect.y) + y;
+        // console.log(`new X ${newX} new Y: ${newY} - debug => scrolly:${scrollRect.y} ely:${elRect.y}`);
         this._testElement.style.transform = `translate(${newX}px, ${newY}px)`;
+
+        if(newX < 0){
+            this._testElement.style.transform = `translate(0px, ${newY}px)`;
+        }
     }
 }

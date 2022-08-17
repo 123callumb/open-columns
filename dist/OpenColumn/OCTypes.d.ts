@@ -9,7 +9,7 @@ export interface OCHeaderConfig<T> {
     parentHeaders?: OCHeader[][];
 }
 export interface OCHeader {
-    name: string;
+    displayName: string;
     sticky?: boolean;
     canOrderBy?: boolean;
     canReorder?: boolean;
@@ -17,6 +17,7 @@ export interface OCHeader {
     header?: HTMLElement;
 }
 export interface OCDataHeader<T> extends OCHeader {
+    propertyName: keyof T;
     preCellRender?: (data?: unknown, rowData?: T, api?: OpenColumn) => unknown;
     postCellRender?: (cell: HTMLElement, data?: unknown, rowData?: T, api?: OpenColumn) => void;
 }

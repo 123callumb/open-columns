@@ -24,9 +24,9 @@ return /******/ (() => { // webpackBootstrap
 /*!***************************************!*\
   !*** ./src/OpenColumn/OCAttribute.ts ***!
   \***************************************/
-/***/ ((__unused_webpack_module, exports) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("\n\nexports.__esModule = true;\n\nvar OCAttribute =\n/** @class */\nfunction () {\n  function OCAttribute() {}\n\n  OCAttribute.TAGS = {};\n  OCAttribute.CLASS = {\n    // Wrapper\n    Wrapper_Container: \"OC-Wrapper-Contaier\",\n    // Header\n    Headers_Contaier: \"OC-Headers-Container\",\n    // Scrollbody\n    ScrollBody_Container: \"OC-ScrollBody-Container\"\n  };\n  return OCAttribute;\n}();\n\nexports[\"default\"] = OCAttribute;\n\n//# sourceURL=webpack://open-columns/./src/OpenColumn/OCAttribute.ts?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (/* binding */ OCAttribute)\n/* harmony export */ });\nclass OCAttribute {}\nOCAttribute.TAGS = {};\nOCAttribute.CLASS = {\n  // Wrapper\n  Wrapper_Container: \"OC-Wrapper-Contaier\",\n  // Header\n  Headers_Contaier: \"OC-Headers-Container\",\n  // Scrollbody\n  ScrollBody_Container: \"OC-ScrollBody-Container\"\n};\n\n//# sourceURL=webpack://open-columns/./src/OpenColumn/OCAttribute.ts?");
 
 /***/ }),
 
@@ -34,9 +34,9 @@ eval("\n\nexports.__esModule = true;\n\nvar OCAttribute =\n/** @class */\nfuncti
 /*!*********************************!*\
   !*** ./src/OpenColumn/OCDom.ts ***!
   \*********************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("\n\nvar __importDefault = this && this.__importDefault || function (mod) {\n  return mod && mod.__esModule ? mod : {\n    \"default\": mod\n  };\n};\n\nexports.__esModule = true;\n\nvar HelperFunctions_1 = __webpack_require__(/*! ../util/HelperFunctions */ \"./src/util/HelperFunctions.ts\");\n\nvar OCAttribute_1 = __importDefault(__webpack_require__(/*! ./OCAttribute */ \"./src/OpenColumn/OCAttribute.ts\"));\n\nvar OCDom =\n/** @class */\nfunction () {\n  function OCDom(selector) {\n    this.Wrapper = typeof selector === \"object\" ? selector : document.querySelector(selector);\n    if (!this.Wrapper) (0, HelperFunctions_1.Throw)(\"Could not initialise dom as the selector was not found.\");\n    this.Headers = document.createElement('div');\n    this.ScrollBody = document.createElement('div');\n    this.Wrapper.classList.add(OCAttribute_1[\"default\"].CLASS.Wrapper_Container);\n    this.Headers.classList.add(OCAttribute_1[\"default\"].CLASS.Headers_Contaier);\n    this.ScrollBody.classList.add(OCAttribute_1[\"default\"].CLASS.ScrollBody_Container);\n    this.Wrapper.append(this.Headers, this.ScrollBody);\n  }\n\n  OCDom.prototype.IsInitialised = function () {\n    return this.Wrapper && this.Headers && this.ScrollBody;\n  };\n\n  return OCDom;\n}();\n\nexports[\"default\"] = OCDom;\n\n//# sourceURL=webpack://open-columns/./src/OpenColumn/OCDom.ts?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (/* binding */ OCDom)\n/* harmony export */ });\n/* harmony import */ var _util_HelperFunctions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util/HelperFunctions */ \"./src/util/HelperFunctions.ts\");\n/* harmony import */ var _OCAttribute__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./OCAttribute */ \"./src/OpenColumn/OCAttribute.ts\");\n\n\nclass OCDom {\n  constructor(selector) {\n    this.Wrapper = typeof selector === \"object\" ? selector : document.querySelector(selector);\n    if (!this.Wrapper) (0,_util_HelperFunctions__WEBPACK_IMPORTED_MODULE_0__.Throw)(\"Could not initialise dom as the selector was not found.\");\n    this.Headers = document.createElement('div');\n    this.ScrollBody = document.createElement('div');\n    this.Wrapper.classList.add(_OCAttribute__WEBPACK_IMPORTED_MODULE_1__[\"default\"].CLASS.Wrapper_Container);\n    this.Headers.classList.add(_OCAttribute__WEBPACK_IMPORTED_MODULE_1__[\"default\"].CLASS.Headers_Contaier);\n    this.ScrollBody.classList.add(_OCAttribute__WEBPACK_IMPORTED_MODULE_1__[\"default\"].CLASS.ScrollBody_Container);\n    this.Wrapper.append(this.Headers, this.ScrollBody);\n  }\n\n  IsInitialised() {\n    return this.Wrapper && this.Headers && this.ScrollBody;\n  }\n\n}\n\n//# sourceURL=webpack://open-columns/./src/OpenColumn/OCDom.ts?");
 
 /***/ }),
 
@@ -44,9 +44,9 @@ eval("\n\nvar __importDefault = this && this.__importDefault || function (mod) {
 /*!****************************************!*\
   !*** ./src/OpenColumn/OCScrollBody.ts ***!
   \****************************************/
-/***/ ((__unused_webpack_module, exports) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("\n\nexports.__esModule = true;\n\nvar OCScrollBody =\n/** @class */\nfunction () {\n  function OCScrollBody(dom) {\n    this._dom = dom;\n    this.Scroll = this.Scroll.bind(this);\n    this.OnScroll = this.OnScroll.bind(this);\n    this.RegisterEvents = this.RegisterEvents.bind(this);\n    this.RegisterEvents();\n  }\n\n  OCScrollBody.prototype.RegisterEvents = function () {\n    this._dom.ScrollBody.addEventListener('wheel', this.OnScroll, {\n      passive: false\n    });\n\n    this._testElement = document.createElement('div');\n    this._testElement.style.height = '50px';\n    this._testElement.style.width = '200px';\n    this._testElement.style.backgroundColor = 'rgb(40, 40, 40)';\n    this._testElement.style.transition = 'all linear 0.1';\n\n    this._dom.ScrollBody.append(this._testElement);\n  };\n\n  OCScrollBody.prototype.OnScroll = function (e) {\n    e.preventDefault();\n    console.log(\"X: \".concat(e.deltaX, \" Y: \").concat(e.deltaY, \" Z: \").concat(e.deltaZ));\n    this.Scroll(e.deltaX, e.deltaY);\n  };\n\n  OCScrollBody.prototype.Scroll = function (x, y) {\n    var scrollRect = this._dom.ScrollBody.getBoundingClientRect();\n\n    var elRect = this._testElement.getBoundingClientRect();\n\n    var newX = scrollRect.x - elRect.x + x;\n    var newY = scrollRect.y - elRect.y + y;\n    console.log(\"new X \".concat(newX, \" new Y: \").concat(newY));\n    this._testElement.style.transform = \"translate(\".concat(newX, \"px, \").concat(newY, \"px)\");\n  };\n\n  return OCScrollBody;\n}();\n\nexports[\"default\"] = OCScrollBody;\n\n//# sourceURL=webpack://open-columns/./src/OpenColumn/OCScrollBody.ts?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (/* binding */ OCScrollBody)\n/* harmony export */ });\nclass OCScrollBody {\n  constructor(dom) {\n    this._dom = dom;\n    this.Scroll = this.Scroll.bind(this);\n    this.OnScroll = this.OnScroll.bind(this);\n    this.RegisterEvents = this.RegisterEvents.bind(this);\n    this.RegisterEvents();\n  }\n\n  RegisterEvents() {\n    this._dom.ScrollBody.addEventListener('wheel', this.OnScroll, {\n      passive: false\n    });\n\n    this._testElement = document.createElement('div');\n    this._testElement.style.height = '50px';\n    this._testElement.style.width = '200px';\n    this._testElement.style.backgroundColor = 'rgb(40, 40, 40)';\n    this._testElement.style.transition = 'all linear 0.1';\n\n    this._dom.ScrollBody.append(this._testElement);\n  }\n\n  OnScroll(e) {\n    e.preventDefault(); // console.log(`X: ${e.deltaX} Y: ${e.deltaY} Z: ${e.deltaZ}`);\n\n    this.Scroll(e.deltaX, e.deltaY);\n  }\n\n  Scroll(x, y) {\n    const scrollRect = this._dom.ScrollBody.getBoundingClientRect();\n\n    const elRect = this._testElement.getBoundingClientRect();\n\n    const newX = elRect.x - scrollRect.x + x;\n    const newY = elRect.y - scrollRect.y + y; // console.log(`new X ${newX} new Y: ${newY} - debug => scrolly:${scrollRect.y} ely:${elRect.y}`);\n\n    this._testElement.style.transform = `translate(${newX}px, ${newY}px)`;\n\n    if (newX < 0) {\n      this._testElement.style.transform = `translate(0px, ${newY}px)`;\n    }\n  }\n\n}\n\n//# sourceURL=webpack://open-columns/./src/OpenColumn/OCScrollBody.ts?");
 
 /***/ }),
 
@@ -54,9 +54,9 @@ eval("\n\nexports.__esModule = true;\n\nvar OCScrollBody =\n/** @class */\nfunct
 /*!**************************************!*\
   !*** ./src/OpenColumn/OpenColumn.ts ***!
   \**************************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("\n\nvar __importDefault = this && this.__importDefault || function (mod) {\n  return mod && mod.__esModule ? mod : {\n    \"default\": mod\n  };\n};\n\nexports.__esModule = true;\n\nvar OCDom_1 = __importDefault(__webpack_require__(/*! ./OCDom */ \"./src/OpenColumn/OCDom.ts\"));\n\nvar OCScrollBody_1 = __importDefault(__webpack_require__(/*! ./OCScrollBody */ \"./src/OpenColumn/OCScrollBody.ts\"));\n\nvar HelperFunctions_1 = __webpack_require__(/*! ../util/HelperFunctions */ \"./src/util/HelperFunctions.ts\");\n\nvar OpenColumn =\n/** @class */\nfunction () {\n  function OpenColumn(options) {\n    this._options = options;\n    this.Init = this.Init.bind(this);\n    (0, HelperFunctions_1.OnDomReady)(this.Init);\n  }\n\n  OpenColumn.prototype.Init = function () {\n    if (!this._options) (0, HelperFunctions_1.Throw)(\"Cannot initialise without a configured set of options.\");\n    this._dom = new OCDom_1[\"default\"](this._options.selector);\n    this._scrollBody = new OCScrollBody_1[\"default\"](this._dom);\n  };\n\n  return OpenColumn;\n}();\n\nexports[\"default\"] = OpenColumn;\n\n//# sourceURL=webpack://open-columns/./src/OpenColumn/OpenColumn.ts?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (/* binding */ OpenColumn)\n/* harmony export */ });\n/* harmony import */ var _OCDom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./OCDom */ \"./src/OpenColumn/OCDom.ts\");\n/* harmony import */ var _OCScrollBody__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./OCScrollBody */ \"./src/OpenColumn/OCScrollBody.ts\");\n/* harmony import */ var _util_HelperFunctions__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../util/HelperFunctions */ \"./src/util/HelperFunctions.ts\");\n\n\n\nclass OpenColumn {\n  constructor(options) {\n    this._options = options;\n    this.Init = this.Init.bind(this);\n    (0,_util_HelperFunctions__WEBPACK_IMPORTED_MODULE_2__.OnDomReady)(this.Init);\n  }\n\n  Init() {\n    if (!this._options) (0,_util_HelperFunctions__WEBPACK_IMPORTED_MODULE_2__.Throw)(\"Cannot initialise without a configured set of options.\");\n    this._dom = new _OCDom__WEBPACK_IMPORTED_MODULE_0__[\"default\"](this._options.selector);\n    this._scrollBody = new _OCScrollBody__WEBPACK_IMPORTED_MODULE_1__[\"default\"](this._dom);\n  }\n\n}\n\n//# sourceURL=webpack://open-columns/./src/OpenColumn/OpenColumn.ts?");
 
 /***/ }),
 
@@ -64,9 +64,9 @@ eval("\n\nvar __importDefault = this && this.__importDefault || function (mod) {
 /*!**********************!*\
   !*** ./src/index.ts ***!
   \**********************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("\n\nvar __importDefault = this && this.__importDefault || function (mod) {\n  return mod && mod.__esModule ? mod : {\n    \"default\": mod\n  };\n};\n\nexports.__esModule = true;\n\n__webpack_require__(/*! ./style/index.scss */ \"./src/style/index.scss\");\n\nvar OpenColumn_1 = __importDefault(__webpack_require__(/*! ./OpenColumn/OpenColumn */ \"./src/OpenColumn/OpenColumn.ts\"));\n\nexports[\"default\"] = OpenColumn_1[\"default\"];\n\n//# sourceURL=webpack://open-columns/./src/index.ts?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var _style_index_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./style/index.scss */ \"./src/style/index.scss\");\n/* harmony import */ var _OpenColumn_OpenColumn__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./OpenColumn/OpenColumn */ \"./src/OpenColumn/OpenColumn.ts\");\n\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_OpenColumn_OpenColumn__WEBPACK_IMPORTED_MODULE_1__[\"default\"]);\n\n//# sourceURL=webpack://open-columns/./src/index.ts?");
 
 /***/ }),
 
@@ -74,9 +74,9 @@ eval("\n\nvar __importDefault = this && this.__importDefault || function (mod) {
 /*!*************************************!*\
   !*** ./src/util/HelperFunctions.ts ***!
   \*************************************/
-/***/ ((__unused_webpack_module, exports) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("\n\nexports.__esModule = true;\nexports.Throw = exports.OnDomReady = void 0;\n\nfunction OnDomReady(callback) {\n  document.readyState !== 'loading' ? callback() : document.addEventListener('DOMContentLoaded', callback);\n}\n\nexports.OnDomReady = OnDomReady;\n\nfunction Throw(mesage) {\n  throw \"========================\\nOPEN COLUMNS: \" + mesage + \"\\n============================\";\n}\n\nexports.Throw = Throw;\n\n//# sourceURL=webpack://open-columns/./src/util/HelperFunctions.ts?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"OnDomReady\": () => (/* binding */ OnDomReady),\n/* harmony export */   \"Throw\": () => (/* binding */ Throw)\n/* harmony export */ });\nfunction OnDomReady(callback) {\n  document.readyState !== 'loading' ? callback() : document.addEventListener('DOMContentLoaded', callback);\n}\nfunction Throw(mesage) {\n  throw \"========================\\nOPEN COLUMNS: \" + mesage + \"\\n============================\";\n}\n\n//# sourceURL=webpack://open-columns/./src/util/HelperFunctions.ts?");
 
 /***/ }),
 
@@ -86,7 +86,7 @@ eval("\n\nexports.__esModule = true;\nexports.Throw = exports.OnDomReady = void 
   \***************************************************************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../node_modules/css-loader/dist/runtime/noSourceMaps.js */ \"./node_modules/css-loader/dist/runtime/noSourceMaps.js\");\n/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../node_modules/css-loader/dist/runtime/api.js */ \"./node_modules/css-loader/dist/runtime/api.js\");\n/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);\n// Imports\n\n\nvar ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));\n// Module\n___CSS_LOADER_EXPORT___.push([module.id, \".OC-Wrapper-Contaier {\\n  display: flex;\\n  flex-direction: column;\\n}\\n.OC-Wrapper-Contaier .OC-Headers-Container {\\n  min-height: 4px;\\n  background-color: darkslategrey;\\n}\\n.OC-Wrapper-Contaier .OC-ScrollBody-Container {\\n  flex: 1;\\n  background-color: aliceblue;\\n}\", \"\"]);\n// Exports\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);\n\n\n//# sourceURL=webpack://open-columns/./src/style/index.scss?./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet%5B1%5D.rules%5B1%5D.use%5B2%5D");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../node_modules/css-loader/dist/runtime/noSourceMaps.js */ \"./node_modules/css-loader/dist/runtime/noSourceMaps.js\");\n/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../node_modules/css-loader/dist/runtime/api.js */ \"./node_modules/css-loader/dist/runtime/api.js\");\n/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);\n// Imports\n\n\nvar ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));\n// Module\n___CSS_LOADER_EXPORT___.push([module.id, \".OC-Wrapper-Contaier {\\n  display: flex;\\n  flex-direction: column;\\n}\\n.OC-Wrapper-Contaier .OC-Headers-Container {\\n  min-height: 4px;\\n  background-color: darkslategrey;\\n}\\n.OC-Wrapper-Contaier .OC-ScrollBody-Container {\\n  flex: 1;\\n  background-color: aliceblue;\\n  overflow: hidden;\\n}\", \"\"]);\n// Exports\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);\n\n\n//# sourceURL=webpack://open-columns/./src/style/index.scss?./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet%5B1%5D.rules%5B1%5D.use%5B2%5D");
 
 /***/ }),
 
@@ -200,7 +200,7 @@ eval("\n\n/* istanbul ignore next  */\nfunction styleTagTransform(css, styleElem
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
-/******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
@@ -256,7 +256,7 @@ eval("\n\n/* istanbul ignore next  */\nfunction styleTagTransform(css, styleElem
 /******/ 	
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	// This entry module is referenced by other modules so it can't be inlined
+/******/ 	// This entry module can't be inlined because the eval devtool is used.
 /******/ 	var __webpack_exports__ = __webpack_require__("./src/index.ts");
 /******/ 	
 /******/ 	return __webpack_exports__;
