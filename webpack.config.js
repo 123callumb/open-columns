@@ -1,6 +1,5 @@
 const path = require('path');
 const sass = require('sass');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 
 const defaultConfig = {
     target: 'web',
@@ -17,9 +16,6 @@ const defaultConfig = {
     watchOptions: {
         ignored: /node_modules/
     },
-    plugins: [new MiniCssExtractPlugin({
-        filename: 'open-columns.default.css'
-    })],
     module: {
         rules: [
             {
@@ -31,7 +27,7 @@ const defaultConfig = {
                 test: /\.scss$/,
                 exclude: [/node_modules/, /test/],
                 use: [
-                    MiniCssExtractPlugin.loader,
+                    "style-loader",
                     "css-loader",
                     {
                         loader: 'sass-loader',

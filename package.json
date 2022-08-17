@@ -5,7 +5,7 @@
   "main": "./dist/open-columns.js",
   "types": "./dist/index.d.ts",
   "files": [
-    "dist"
+    "dist/open-columns.js"
   ],
   "scripts": {
     "dev": "webpack --mode=development --watch --progress",

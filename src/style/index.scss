@@ -1,3 +1,14 @@
-.open-columns-wrapper {
-    background-color: whitesmoke;
+.OC-Wrapper-Contaier {
+    display: flex;
+    flex-direction: column;
+
+    .OC-Headers-Container{
+        min-height: 4px;
+        background-color: darkslategrey;
+    }
+
+    .OC-ScrollBody-Container {
+        flex: 1;
+        background-color: aliceblue;
+    }
 }
