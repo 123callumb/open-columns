@@ -1,13 +1,13 @@
-import { OCDataHeader } from "./OCTypes";
+import { OCDataHeaderOptions } from "./OCTypes";
 import OpenColumn from "./OpenColumn";
 
 export default class OCCell<T> {
     private readonly _api: OpenColumn;
-    private readonly _header: OCDataHeader<T>;
+    private readonly _header: OCDataHeaderOptions<T>;
     private _element: HTMLElement;
     private _rowData?: T;
 
-    constructor(api: OpenColumn, header: OCDataHeader<T>, rowData?: T) {
+    constructor(api: OpenColumn, header: OCDataHeaderOptions<T>, rowData?: T) {
         this._header = header;
         this._rowData = rowData;
         this._api = api;

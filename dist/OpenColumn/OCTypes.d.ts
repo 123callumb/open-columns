@@ -2,26 +2,26 @@ import OpenColumn from "./OpenColumn";
 export interface OpenColumnOptions<T> {
     selector: string | HTMLElement;
     headers?: string[] | OCHeaderConfig<T>;
-    data?: OCDataConfig<T>;
+    data?: OCDataOptions<T>;
 }
 export interface OCHeaderConfig<T> {
-    headers: OCDataHeader<T>[];
-    parentHeaders?: OCHeader[][];
+    headers: OCDataHeaderOptions<T>[];
+    parentHeaders?: OCHeaderOptions[][];
 }
-export interface OCHeader {
+export interface OCHeaderOptions {
     displayName: string;
     sticky?: boolean;
     canOrderBy?: boolean;
     canReorder?: boolean;
-    render?: (header: HTMLElement, api?: OpenColumn) => string | HTMLElement;
+    postColRender?: (header: HTMLElement, api?: OpenColumn) => string | HTMLElement;
     header?: HTMLElement;
 }
-export interface OCDataHeader<T> extends OCHeader {
+export interface OCDataHeaderOptions<T> extends OCHeaderOptions {
     propertyName: keyof T;
     preCellRender?: (data?: unknown, rowData?: T, api?: OpenColumn) => unknown;
     postCellRender?: (cell: HTMLElement, data?: unknown, rowData?: T, api?: OpenColumn) => void;
 }
-export interface OCDataConfig<T, Request = OCDataRequest, Response = OCDataResponse<T>> {
+export interface OCDataOptions<T, Request = OCDataRequest, Response = OCDataResponse<T>> {
     url?: string;
     method?: 'GET' | 'POST';
     headers?: string[];
