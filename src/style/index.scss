@@ -16,5 +16,13 @@
         flex: 1;
         background-color: aliceblue;
         overflow: hidden;
+
+        .OC-ScrollBody-Row {
+            display: flex;
+
+            .OC-ScrollBody-Cell {
+                border-right: 1px solid rgb(40, 40, 40);
+            }
+        }
     }
 }
