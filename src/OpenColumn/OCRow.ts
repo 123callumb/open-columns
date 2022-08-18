@@ -1,9 +1,10 @@
+import OCAttribute from "./OCAttribute";
 import OCCell from "./OCCell";
 import { OCDataHeaderOptions } from "./OCTypes";
 import OpenColumn from "./OpenColumn";
 
 export default class OCRow<T> {
-    private readonly _api: OpenColumn;
+    private readonly _api: OpenColumn<T>;
     private readonly _headers: OCDataHeaderOptions<T>[];
     private _element: HTMLElement;
     private _cells: OCCell<T>[];
@@ -11,7 +12,7 @@ export default class OCRow<T> {
 
     public readonly RowIndex: number;
 
-    constructor(rowIndex: number, api: OpenColumn, headers: OCDataHeaderOptions<T>[], data?: T) {
+    constructor(api: OpenColumn<T>, rowIndex: number, headers: OCDataHeaderOptions<T>[], data?: T) {
         this._api = api;
         this._data = data;
         this._headers = headers;
@@ -31,8 +32,10 @@ export default class OCRow<T> {
     }
 
     private Draw(refresh: boolean = false) {
-        if (!this._element)
+        if (!this._element){
             this._element = document.createElement('div');
+            this._element.classList.add(OCAttribute.CLASS.ScrollBody_Row);
+        }
 
         if (refresh) {
             this._cells = [];

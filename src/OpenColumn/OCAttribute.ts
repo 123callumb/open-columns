@@ -9,8 +9,11 @@ export default class OCAttribute {
         
         // Header
         Headers_Contaier: "OC-Headers-Container",
+        Header_Cell: "OC-Header-Cell",
 
         // Scrollbody
-        ScrollBody_Container: "OC-ScrollBody-Container"
+        ScrollBody_Container: "OC-ScrollBody-Container",
+        ScrollBody_Row: "OC-ScrollBody-Row",
+        ScrollBody_Cell: "OC-ScrollBody-Cell"
     }
 }

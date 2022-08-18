@@ -3,6 +3,9 @@ export default class OCAttribute {
     static readonly CLASS: {
         Wrapper_Container: string;
         Headers_Contaier: string;
+        Header_Cell: string;
         ScrollBody_Container: string;
+        ScrollBody_Row: string;
+        ScrollBody_Cell: string;
     };
 }

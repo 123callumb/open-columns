@@ -1,25 +1,22 @@
 import OpenColumn from "./OpenColumn";
 export interface OpenColumnOptions<T> {
     selector: string | HTMLElement;
-    headers?: string[] | OCHeaderConfig<T>;
+    headers?: string[] | OCDataHeaderOptions<T>[];
+    parentHeaders?: string[] | OCHeaderOptions<T>[];
     data?: OCDataOptions<T>;
+    deferInitialRequest?: boolean;
 }
-export interface OCHeaderConfig<T> {
-    headers: OCDataHeaderOptions<T>[];
-    parentHeaders?: OCHeaderOptions[][];
-}
-export interface OCHeaderOptions {
+export interface OCHeaderOptions<T> {
     displayName: string;
     sticky?: boolean;
     canOrderBy?: boolean;
     canReorder?: boolean;
-    postColRender?: (header: HTMLElement, api?: OpenColumn) => string | HTMLElement;
-    header?: HTMLElement;
+    render?: (api?: OpenColumn<T>) => HTMLElement | string;
 }
-export interface OCDataHeaderOptions<T> extends OCHeaderOptions {
+export interface OCDataHeaderOptions<T> extends OCHeaderOptions<T> {
     propertyName: keyof T;
-    preCellRender?: (data?: unknown, rowData?: T, api?: OpenColumn) => unknown;
-    postCellRender?: (cell: HTMLElement, data?: unknown, rowData?: T, api?: OpenColumn) => void;
+    preCellRender?: (data?: unknown, rowData?: T, api?: OpenColumn<T>) => unknown;
+    postCellRender?: (cell: HTMLElement, data?: unknown, rowData?: T, api?: OpenColumn<T>) => void;
 }
 export interface OCDataOptions<T, Request = OCDataRequest, Response = OCDataResponse<T>> {
     url?: string;
