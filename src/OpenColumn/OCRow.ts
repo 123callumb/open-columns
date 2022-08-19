@@ -108,7 +108,7 @@ export default class OCRow<T> {
         const boundingRect = this._element.getBoundingClientRect();
         const parentRect = this._element.parentElement.getBoundingClientRect();
         const offset = withinOffset ? 10 : 0;
-        console.log(`${boundingRect.bottom}`)
+
         if((boundingRect.bottom + offset) < 100 /* parentRect.top */)
             return true;
 

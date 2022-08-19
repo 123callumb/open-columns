@@ -25,7 +25,7 @@ export default class OpenColumn<T = unknown> {
 
         this._dom = new OCDom(this._options.selector);
         this._header = new OCDataHeader<T>(this, this._dom, this._options.headers);
-        this._scrollBody = new OCScrollBody(this, this._dom, this._header);
+        this._scrollBody = new OCScrollBody(this, this._options.scroller, this._dom, this._header);
     }
 
     public GetRow(index: number): OCRow<T> {

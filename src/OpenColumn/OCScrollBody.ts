@@ -2,15 +2,18 @@ import OCDataHeader from "./OCDataHeader";
 import OCDom from "./OCDom";
 import OpenColumn from "./OpenColumn";
 import OCRow from "./OCRow";
+import { OCScrollerOptions } from "./OCTypes";
 
 export default class OCScrollBody<T>{
     private readonly _dom: OCDom;
     private readonly _api: OpenColumn<T>;
     private readonly _header: OCDataHeader<T>;
+    private readonly _options: OCScrollerOptions;
     private _rows: OCRow<T>[] = [];
 
-    constructor(api: OpenColumn<T>, dom: OCDom, header: OCDataHeader<T>) {
+    constructor(api: OpenColumn<T>, options: OCScrollerOptions, dom: OCDom, header: OCDataHeader<T>) {
         this._api = api;
+        this._options = options;
         this._dom = dom;
         this._header = header;
 
@@ -35,6 +38,12 @@ export default class OCScrollBody<T>{
     }
 
     public Scroll(dX: number, dY: number) {
+        if(Math.abs(dX) <= (this._options?.sensX ?? 0))
+            dX = 0;
+        
+        if(Math.abs(dY) <= (this._options?.sensY ?? 0))
+            dY = 0;
+
         this._rows.forEach(f => {
             f.Translate(dX, dY)
 
@@ -47,12 +56,9 @@ export default class OCScrollBody<T>{
             }
         });
         this._header.Translate(dX);
-
-        console.log(this._rows);
     }
 
     private InitRows() { // for testing purposes 
-       // debugger;
         const testHeight = 100;
         const headerOptions = this._header.GetHeaderOptions();
         const firstRow = new OCRow<T>({ api: this._api, dom: this._dom, rowIndex: 0, headers: headerOptions });

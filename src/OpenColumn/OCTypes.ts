@@ -8,6 +8,7 @@ export interface OpenColumnOptions<T> {
     parentHeaders?: string[] | OCHeaderOptions<T>[];
     data?: OCDataOptions<T>;
     deferInitialRequest?: boolean;
+    scroller?: OCScrollerOptions;
 }
 
 export interface OCHeaderOptions<T> {
@@ -54,4 +55,9 @@ export interface OCRowOptions<T> {
     data?: T;
     prevRow?: OCRow<T>;
     nextRow?: OCRow<T>;
+}
+
+export interface OCScrollerOptions {
+    sensX?: number,
+    sensY?: number
 }
