@@ -52,24 +52,27 @@ export default class OCScrollBody<T>{
     }
 
     private InitRows() { // for testing purposes 
+       // debugger;
         const testHeight = 100;
         const headerOptions = this._header.GetHeaderOptions();
-        const firstRow = new OCRow<T>({ api: this._api, rowIndex: 0, headers: headerOptions });
+        const firstRow = new OCRow<T>({ api: this._api, dom: this._dom, rowIndex: 0, headers: headerOptions });
         const firstRowElemet = firstRow.GetElement();
         this._dom.ScrollBody.append(firstRowElemet);
         this._rows.push(firstRow);
 
         const rowToFill = Math.floor(testHeight / firstRowElemet.clientHeight);
         for (let index = 1; index <= rowToFill; index++) {
-            const prevRow = this._rows[index--];
+            const prevRow = this._rows[index-1];
             const newRow = new OCRow<T>({ 
                 api: this._api, 
+                dom: this._dom,
                 rowIndex: index, 
                 headers: headerOptions, 
-                prevRow: prevRow
+                prevRow: prevRow,
             });
             const newRowEl = newRow.GetElement();
             this._dom.ScrollBody.append(newRowEl);
+            prevRow.SetNextRow(newRow);
             this._rows.push(newRow);
         }
     }

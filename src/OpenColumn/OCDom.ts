@@ -6,6 +6,8 @@ export default class OCDom {
     public Headers: HTMLElement;
     public ScrollBody: HTMLElement;
 
+    private _scrollBodyOffset: number;
+
     constructor(selector: HTMLElement | string){
         this.Wrapper = typeof(selector) === "object" ? selector : document.querySelector(selector);
 
@@ -20,9 +22,16 @@ export default class OCDom {
         this.ScrollBody.classList.add(OCAttribute.CLASS.ScrollBody_Container);
 
         this.Wrapper.append(this.Headers, this.ScrollBody);
+
+        this._scrollBodyOffset = this.ScrollBody.getBoundingClientRect().y;
     }
 
     public IsInitialised(){
         return this.Wrapper && this.Headers && this.ScrollBody;
+    }
+
+    public GetScrollDOMTop(){
+        return this._scrollBodyOffset;
+    
     }
 }

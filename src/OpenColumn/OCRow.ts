@@ -28,6 +28,8 @@ export default class OCRow<T> {
         this.Update = this.Update.bind(this);
         this.GetData = this.GetData.bind(this);
         this.GetElement = this.GetElement.bind(this);
+        this.SetNextRow = this.SetNextRow.bind(this);
+        this.SetPrevRow = this.SetPrevRow.bind(this);
 
         this.Draw(true);
     }
@@ -41,9 +43,10 @@ export default class OCRow<T> {
             this._element = document.createElement('div');
             this._element.classList.add(OCAttribute.CLASS.ScrollBody_Row);
 
-            const testOffset = 100;
+            const testOffset = this.RowIndex === 0 ? 100 : 0;
             const rowOffset = this._prevRow ? this._prevRow.GetElement().getBoundingClientRect().bottom : 0;
-            this._element.style.transform = `translate(0px, ${testOffset + rowOffset}px)`; // Try not to  add any other transform properties or will have to use WebkitCssMatrix class
+            //const scrollBodyOffset = this._element.parentElement.getBoundingClientRect().top;
+            this._element.style.transform = `translate(0px, ${testOffset + rowOffset - 58.5}px)`; // Try not to  add any other transform properties or will have to use WebkitCssMatrix class
             this._element.style.transition = 'all linear 0.1';
         }
 
