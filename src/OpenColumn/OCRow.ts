@@ -1,6 +1,6 @@
 import OCAttribute from "./OCAttribute";
 import OCCell from "./OCCell";
-import { OCDataHeaderOptions, OCRowOptions } from "./OCTypes";
+import { OCDataHeaderOptions, OCRowOptions, OCRowPositionState } from "./OCTypes";
 import OpenColumn from "./OpenColumn";
 
 export default class OCRow<T> {
@@ -11,8 +11,6 @@ export default class OCRow<T> {
     private _nextRow?: OCRow<T>;
     private _cells: OCCell<T>[];
     private _data?: T;
-    
-    public readonly RowIndex: number;
 
     constructor(options: OCRowOptions<T>) {
         this._api = options.api;
@@ -20,7 +18,6 @@ export default class OCRow<T> {
         this._headers = options.headers;
         this._cells = [];
         
-        this.RowIndex = options.rowIndex;
         this._nextRow = options.nextRow;
         this._prevRow = options.prevRow;
 
@@ -43,10 +40,13 @@ export default class OCRow<T> {
             this._element = document.createElement('div');
             this._element.classList.add(OCAttribute.CLASS.ScrollBody_Row);
 
-            const testOffset = this.RowIndex === 0 ? 100 : 0;
             const rowOffset = this._prevRow ? this._prevRow.GetElement().getBoundingClientRect().bottom : 0;
+
+            // ugh for drawing above the dom we need to know the height the row is going to be before it is even rendered, this is going to be annoying.
+            // may have to create an invisuble dom somewhere or even inside the scroll body for getting the height 
+            // most likely needs to stay inside the dom incase someone alters the height of the rows through css
             //const scrollBodyOffset = this._element.parentElement.getBoundingClientRect().top;
-            this._element.style.transform = `translate(0px, ${testOffset + rowOffset - 58.5}px)`; // Try not to  add any other transform properties or will have to use WebkitCssMatrix class
+            this._element.style.transform = `translate(0px, ${rowOffset - 58.5}px)`; // Try not to  add any other transform properties or will have to use WebkitCssMatrix class
             this._element.style.transition = 'all linear 0.1';
         }
 
@@ -101,21 +101,20 @@ export default class OCRow<T> {
         this._element.style.transform = `translate(${newX}px, ${newY}px)`;
     }
 
-    public OutOfView(withinOffset: boolean = false): boolean {
+    public GetPositionState(offset: number = 0): OCRowPositionState {
         if(!this._element)
-            return true;
+            return OCRowPositionState.Removed;
 
         const boundingRect = this._element.getBoundingClientRect();
         const parentRect = this._element.parentElement.getBoundingClientRect();
-        const offset = withinOffset ? 10 : 0;
 
-        if((boundingRect.bottom + offset) < 100 /* parentRect.top */)
-            return true;
+        if((boundingRect.bottom + offset) < parentRect.top)
+            return OCRowPositionState.Above;
 
-        if((boundingRect.top + offset) > 300 /* parentRect.bottom */)
-            return true;
+        if((boundingRect.top + offset) > parentRect.bottom)
+            return OCRowPositionState.Below;
             
-        return false;
+        return OCRowPositionState.Visible;
     }
 
     public SetNextRow(row: OCRow<T>) : void {

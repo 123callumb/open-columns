@@ -2,7 +2,7 @@ import OCDataHeader from "./OCDataHeader";
 import OCDom from "./OCDom";
 import OpenColumn from "./OpenColumn";
 import OCRow from "./OCRow";
-import { OCScrollerOptions } from "./OCTypes";
+import { OCRowOptions, OCRowPositionState, OCScrollerOptions } from "./OCTypes";
 
 export default class OCScrollBody<T>{
     private readonly _dom: OCDom;
@@ -38,42 +38,71 @@ export default class OCScrollBody<T>{
     }
 
     public Scroll(dX: number, dY: number) {
-        if(Math.abs(dX) <= (this._options?.sensX ?? 0))
+        if (Math.abs(dX) <= (this._options?.sensX ?? 0))
             dX = 0;
-        
-        if(Math.abs(dY) <= (this._options?.sensY ?? 0))
+
+        if (Math.abs(dY) <= (this._options?.sensY ?? 0))
             dY = 0;
 
         this._rows.forEach(f => {
+            // Move row based on scroll
             f.Translate(dX, dY)
 
-            // check out of bounds
-            if (f.OutOfView(true)) {
-                f.GetElement().remove();
-                // some browsers don't support index of apparently - screw  em for now :P
-                const index = this._rows.indexOf(f);
-                this._rows.splice(index, 1);
+            // Validate each rows position
+            const rowPosState = f.GetPositionState();
+            if (rowPosState === OCRowPositionState.Visible || rowPosState === OCRowPositionState.Removed)
+                return;
+
+            // If code reaches here row must be above or below scroller body
+            // so it needs to be removed
+            f.GetElement().remove();
+            const index = this._rows.indexOf(f);
+            this._rows.splice(index, 1);
+
+            const newRowOpts: OCRowOptions<T> = {
+                api: this._api,
+                dom: this._dom,
+                headers: this._header.GetHeaderOptions()
+            };
+
+            // Append next row below
+            if (rowPosState === OCRowPositionState.Above) {
+                const prevRow = this._rows[this._rows.length - 1];
+                const newRow = new OCRow<T>({ ...newRowOpts, prevRow });
+
+                this._dom.ScrollBody.append(newRow.GetElement());
+                prevRow.SetNextRow(newRow);
+                this._rows.push(newRow);
             }
+
+            // Append next row above
+            if (rowPosState === OCRowPositionState.Below) {
+                const nextRow = this._rows[0];
+                const newRow = new OCRow({ ...newRowOpts, nextRow });
+
+                this._dom.ScrollBody.prepend(newRow.GetElement());
+                newRowOpts.nextRow.SetPrevRow(newRow);
+                this._rows.unshift(newRow);
+            }
+
         });
         this._header.Translate(dX);
     }
 
     private InitRows() { // for testing purposes 
-        const testHeight = 100;
         const headerOptions = this._header.GetHeaderOptions();
-        const firstRow = new OCRow<T>({ api: this._api, dom: this._dom, rowIndex: 0, headers: headerOptions });
+        const firstRow = new OCRow<T>({ api: this._api, dom: this._dom, headers: headerOptions });
         const firstRowElemet = firstRow.GetElement();
         this._dom.ScrollBody.append(firstRowElemet);
         this._rows.push(firstRow);
 
-        const rowToFill = Math.floor(testHeight / firstRowElemet.clientHeight);
+        const rowToFill = Math.floor(this._dom.ScrollBody.getBoundingClientRect().height / firstRowElemet.clientHeight);
         for (let index = 1; index <= rowToFill; index++) {
-            const prevRow = this._rows[index-1];
-            const newRow = new OCRow<T>({ 
-                api: this._api, 
+            const prevRow = this._rows[index - 1];
+            const newRow = new OCRow<T>({
+                api: this._api,
                 dom: this._dom,
-                rowIndex: index, 
-                headers: headerOptions, 
+                headers: headerOptions,
                 prevRow: prevRow,
             });
             const newRowEl = newRow.GetElement();
@@ -84,11 +113,11 @@ export default class OCScrollBody<T>{
     }
 
     public RowIsDrawn(row: number | OCRow<T>): boolean {
-        const rowElement = typeof row === "object" ? row.GetElement() : this._rows.find(f => f.RowIndex === row).GetElement();
+        const rowElement = typeof row === "object" ? row.GetElement() : this._rows[row].GetElement();
         return this._dom.ScrollBody.contains(rowElement);
     }
 
     public GetRow(index: number): OCRow<T> {
-        return this._rows.find(f => f.RowIndex === index);
+        return this._rows[index];
     }
 }

@@ -50,7 +50,6 @@ export interface OCDataResponse<T> {
 export interface OCRowOptions<T> {
     api: OpenColumn<T>;
     dom: OCDom;
-    rowIndex: number;
     headers: OCDataHeaderOptions<T>[];
     data?: T;
     prevRow?: OCRow<T>;
@@ -60,4 +59,11 @@ export interface OCRowOptions<T> {
 export interface OCScrollerOptions {
     sensX?: number,
     sensY?: number
+}
+
+export enum OCRowPositionState {
+    Above = 1,
+    Below = 2,
+    Visible = 3,
+    Removed = 4
 }

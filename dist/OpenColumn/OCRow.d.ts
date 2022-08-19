@@ -1,4 +1,4 @@
-import { OCRowOptions } from "./OCTypes";
+import { OCRowOptions, OCRowPositionState } from "./OCTypes";
 export default class OCRow<T> {
     private readonly _api;
     private readonly _headers;
@@ -7,7 +7,6 @@ export default class OCRow<T> {
     private _nextRow?;
     private _cells;
     private _data?;
-    readonly RowIndex: number;
     constructor(options: OCRowOptions<T>);
     GetElement(): HTMLElement;
     private Draw;
@@ -18,7 +17,7 @@ export default class OCRow<T> {
         y: number;
     };
     Translate(dX: number, dY: number): void;
-    OutOfView(withinOffset?: boolean): boolean;
+    GetPositionState(offset?: number): OCRowPositionState;
     SetNextRow(row: OCRow<T>): void;
     SetPrevRow(row: OCRow<T>): void;
 }
