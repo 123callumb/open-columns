@@ -1,6 +1,7 @@
 .OC-Wrapper-Contaier {
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 
     .OC-Headers-Container{
         min-height: 4px;
@@ -16,9 +17,12 @@
         flex: 1;
         background-color: aliceblue;
         overflow: hidden;
+        position: relative;
 
         .OC-ScrollBody-Row {
+            position: absolute;
             display: flex;
+            border-top: 1px dashed rgba(40, 40, 40, 0.3);
 
             .OC-ScrollBody-Cell {
                 border-right: 1px solid rgb(40, 40, 40);

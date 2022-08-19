@@ -1,28 +1,33 @@
 import OCAttribute from "./OCAttribute";
 import OCCell from "./OCCell";
-import { OCDataHeaderOptions } from "./OCTypes";
+import { OCDataHeaderOptions, OCRowOptions } from "./OCTypes";
 import OpenColumn from "./OpenColumn";
 
 export default class OCRow<T> {
     private readonly _api: OpenColumn<T>;
     private readonly _headers: OCDataHeaderOptions<T>[];
     private _element: HTMLElement;
+    private _prevRow?: OCRow<T>;
+    private _nextRow?: OCRow<T>;
     private _cells: OCCell<T>[];
     private _data?: T;
-
+    
     public readonly RowIndex: number;
 
-    constructor(api: OpenColumn<T>, rowIndex: number, headers: OCDataHeaderOptions<T>[], data?: T) {
-        this._api = api;
-        this._data = data;
-        this._headers = headers;
-        this.RowIndex = rowIndex;
+    constructor(options: OCRowOptions<T>) {
+        this._api = options.api;
+        this._data = options.data;
+        this._headers = options.headers;
         this._cells = [];
+        
+        this.RowIndex = options.rowIndex;
+        this._nextRow = options.nextRow;
+        this._prevRow = options.prevRow;
 
-        this.GetElement = this.GetElement.bind(this);
         this.Draw = this.Draw.bind(this);
         this.Update = this.Update.bind(this);
         this.GetData = this.GetData.bind(this);
+        this.GetElement = this.GetElement.bind(this);
 
         this.Draw(true);
     }
@@ -32,9 +37,14 @@ export default class OCRow<T> {
     }
 
     private Draw(refresh: boolean = false) {
-        if (!this._element){
+        if (!this._element) {
             this._element = document.createElement('div');
             this._element.classList.add(OCAttribute.CLASS.ScrollBody_Row);
+
+            const testOffset = 100;
+            const rowOffset = this._prevRow ? this._prevRow.GetElement().getBoundingClientRect().bottom : 0;
+            this._element.style.transform = `translate(0px, ${testOffset + rowOffset}px)`; // Try not to  add any other transform properties or will have to use WebkitCssMatrix class
+            this._element.style.transition = 'all linear 0.1';
         }
 
         if (refresh) {
@@ -69,5 +79,47 @@ export default class OCRow<T> {
 
     public GetData() {
         return this._data;
+    }
+
+    public GetTranslatedCoords(): { x: number, y: number } {
+        // using replace to see if it is faster than new WebKitCSSMatrix(style.transform);
+        const brokenTranslate = this._element.style.transform
+            .replace("translate(", "")
+            .replace("px", "")
+            .replace(")", "")
+            .split(',');
+        return { x: parseFloat(brokenTranslate[0]), y: parseFloat(brokenTranslate[1]) }
+    }
+
+    public Translate(dX: number, dY: number) : void {
+        const currentPos = this.GetTranslatedCoords();
+        const newX = currentPos.x + dX;
+        const newY = currentPos.y + dY;
+        this._element.style.transform = `translate(${newX}px, ${newY}px)`;
+    }
+
+    public OutOfView(withinOffset: boolean = false): boolean {
+        if(!this._element)
+            return true;
+
+        const boundingRect = this._element.getBoundingClientRect();
+        const parentRect = this._element.parentElement.getBoundingClientRect();
+        const offset = withinOffset ? 10 : 0;
+        console.log(`${boundingRect.bottom}`)
+        if((boundingRect.bottom + offset) < 100 /* parentRect.top */)
+            return true;
+
+        if((boundingRect.top + offset) > 300 /* parentRect.bottom */)
+            return true;
+            
+        return false;
+    }
+
+    public SetNextRow(row: OCRow<T>) : void {
+        this._nextRow = row;
+    }
+
+    public SetPrevRow(row: OCRow<T>) : void {
+        this._prevRow = row;
     }
 }

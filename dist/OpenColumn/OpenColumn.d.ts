@@ -1,4 +1,5 @@
 import { OpenColumnOptions } from './OCTypes';
+import OCRow from './OCRow';
 export default class OpenColumn<T = unknown> {
     private readonly _options;
     private _dom;
@@ -6,4 +7,5 @@ export default class OpenColumn<T = unknown> {
     private _header;
     constructor(options: OpenColumnOptions<T>);
     private Init;
+    GetRow(index: number): OCRow<T>;
 }

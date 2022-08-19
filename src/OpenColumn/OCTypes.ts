@@ -1,3 +1,4 @@
+import OCRow from "./OCRow";
 import OpenColumn from "./OpenColumn";
 
 export interface OpenColumnOptions<T> {
@@ -42,4 +43,13 @@ export interface OCDataResponse<T> {
     skip: number;
     totalRowCount?: number;
     filtersRefreshed: boolean;
+}
+
+export interface OCRowOptions<T> {
+    api: OpenColumn<T>;
+    rowIndex: number;
+    headers: OCDataHeaderOptions<T>[];
+    data?: T;
+    prevRow?: OCRow<T>;
+    nextRow?: OCRow<T>;
 }

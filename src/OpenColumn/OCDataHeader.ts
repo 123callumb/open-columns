@@ -44,5 +44,23 @@ export default class OCDataHeader<T> {
 
         // Append
         this._dom.Headers.append(...this._headerCells.map(m => m.GetElement()));
+
+        // Style
+        this._dom.Headers.style.transform = `translate(${0}px)`;
+    }
+
+    public GetTranslatedX(): number {
+        // using replace to see if it is faster than new WebKitCSSMatrix(style.transform).m41;
+        const brokenTranslate = this._dom.Headers.style.transform
+            .replace("translate(", "")
+            .replace("px", "")
+            .replace(")", "");
+
+        return  parseFloat(brokenTranslate);
+    }
+
+    public Translate(dX: number) : void {
+        const newX = this.GetTranslatedX() + dX;
+        this._dom.Headers.style.transform = `translate(${newX}px)`;
     }
 }

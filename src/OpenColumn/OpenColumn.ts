@@ -3,6 +3,7 @@ import OCDom from './OCDom';
 import OCScrollBody from './OCScrollBody';
 import OCDataHeader from './OCDataHeader';
 import { Throw, OnDomReady } from '../util/HelperFunctions';
+import OCRow from './OCRow';
 
 export default class OpenColumn<T = unknown> {
     private readonly _options: OpenColumnOptions<T>;
@@ -25,5 +26,12 @@ export default class OpenColumn<T = unknown> {
         this._dom = new OCDom(this._options.selector);
         this._header = new OCDataHeader<T>(this, this._dom, this._options.headers);
         this._scrollBody = new OCScrollBody(this, this._dom, this._header);
+    }
+
+    public GetRow(index: number): OCRow<T> {
+        if (!this._scrollBody)
+            Throw("Scrollbody is not initialised. Cannot access rows.");
+
+        return this._scrollBody.GetRow(index);
     }
 }

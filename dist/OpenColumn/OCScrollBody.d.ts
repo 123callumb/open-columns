@@ -10,7 +10,8 @@ export default class OCScrollBody<T> {
     constructor(api: OpenColumn<T>, dom: OCDom, header: OCDataHeader<T>);
     private RegisterEvents;
     private OnScroll;
-    Scroll(x: number, y: number): void;
+    Scroll(dX: number, dY: number): void;
     private InitRows;
     RowIsDrawn(row: number | OCRow<T>): boolean;
+    GetRow(index: number): OCRow<T>;
 }

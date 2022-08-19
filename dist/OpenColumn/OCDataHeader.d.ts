@@ -12,4 +12,6 @@ export default class OCDataHeader<T> {
     GetHeaders(): OCDataHeaderCell<T>[];
     GetHeaderOptions(): OCDataHeaderOptions<T>[];
     private Draw;
+    GetTranslatedX(): number;
+    Translate(dX: number): void;
 }

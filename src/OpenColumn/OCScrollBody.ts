@@ -26,7 +26,6 @@ export default class OCScrollBody<T>{
 
     private RegisterEvents(): void {
         this._dom.ScrollBody.addEventListener('wheel', this.OnScroll, { passive: false });
-        //this._testElement.style.transition = 'all linear 0.1';
     }
 
     private OnScroll(e: WheelEvent) {
@@ -35,33 +34,52 @@ export default class OCScrollBody<T>{
         this.Scroll(e.deltaX, e.deltaY);
     }
 
-    public Scroll(x: number, y: number) {
-        if (!this._rows[0])
-            return;
+    public Scroll(dX: number, dY: number) {
+        this._rows.forEach(f => {
+            f.Translate(dX, dY)
 
-        const firstRowTest = this._rows[0].GetElement();
-        const scrollRect = this._dom.ScrollBody.getBoundingClientRect();
-        const elRect = firstRowTest.getBoundingClientRect();
-        const newX = (elRect.x - scrollRect.x) + x;
-        const newY = (elRect.y - scrollRect.y) + y;
-        // console.log(`new X ${newX} new Y: ${newY} - debug => scrolly:${scrollRect.y} ely:${elRect.y}`);
-        firstRowTest.style.transform = `translate(${newX}px, ${newY}px)`;
+            // check out of bounds
+            if (f.OutOfView(true)) {
+                f.GetElement().remove();
+                // some browsers don't support index of apparently - screw  em for now :P
+                const index = this._rows.indexOf(f);
+                this._rows.splice(index, 1);
+            }
+        });
+        this._header.Translate(dX);
 
-        if (newX < 0) {
-            firstRowTest.style.transform = `translate(0px, ${newY}px)`;
-        }
+        console.log(this._rows);
     }
 
     private InitRows() { // for testing purposes 
+        const testHeight = 100;
         const headerOptions = this._header.GetHeaderOptions();
-        const firstRow = new OCRow<T>(this._api, 0, headerOptions);
-
-        this._dom.ScrollBody.append(firstRow.GetElement());
+        const firstRow = new OCRow<T>({ api: this._api, rowIndex: 0, headers: headerOptions });
+        const firstRowElemet = firstRow.GetElement();
+        this._dom.ScrollBody.append(firstRowElemet);
         this._rows.push(firstRow);
+
+        const rowToFill = Math.floor(testHeight / firstRowElemet.clientHeight);
+        for (let index = 1; index <= rowToFill; index++) {
+            const prevRow = this._rows[index--];
+            const newRow = new OCRow<T>({ 
+                api: this._api, 
+                rowIndex: index, 
+                headers: headerOptions, 
+                prevRow: prevRow
+            });
+            const newRowEl = newRow.GetElement();
+            this._dom.ScrollBody.append(newRowEl);
+            this._rows.push(newRow);
+        }
     }
 
     public RowIsDrawn(row: number | OCRow<T>): boolean {
         const rowElement = typeof row === "object" ? row.GetElement() : this._rows.find(f => f.RowIndex === row).GetElement();
         return this._dom.ScrollBody.contains(rowElement);
+    }
+
+    public GetRow(index: number): OCRow<T> {
+        return this._rows.find(f => f.RowIndex === index);
     }
 }
