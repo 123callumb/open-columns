@@ -1,7 +1,7 @@
 import { OCRowOptions, OCRowPositionState } from "./OCTypes";
 export default class OCRow<T> {
     private readonly _api;
-    private readonly _headers;
+    private readonly _header;
     private _element;
     private _prevRow?;
     private _nextRow?;
@@ -20,4 +20,5 @@ export default class OCRow<T> {
     GetPositionState(offset?: number): OCRowPositionState;
     SetNextRow(row: OCRow<T>): void;
     SetPrevRow(row: OCRow<T>): void;
+    private SetDrawPosition;
 }

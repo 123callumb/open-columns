@@ -44,6 +44,7 @@ export default class OCScrollBody<T>{
         if (Math.abs(dY) <= (this._options?.sensY ?? 0))
             dY = 0;
 
+        this._header.Translate(dX);
         this._rows.forEach(f => {
             // Move row based on scroll
             f.Translate(dX, dY)
@@ -62,7 +63,7 @@ export default class OCScrollBody<T>{
             const newRowOpts: OCRowOptions<T> = {
                 api: this._api,
                 dom: this._dom,
-                headers: this._header.GetHeaderOptions()
+                header: this._header
             };
 
             // Append next row below
@@ -81,17 +82,15 @@ export default class OCScrollBody<T>{
                 const newRow = new OCRow({ ...newRowOpts, nextRow });
 
                 this._dom.ScrollBody.prepend(newRow.GetElement());
-                newRowOpts.nextRow.SetPrevRow(newRow);
+                nextRow.SetPrevRow(newRow);
                 this._rows.unshift(newRow);
             }
 
         });
-        this._header.Translate(dX);
     }
 
     private InitRows() { // for testing purposes 
-        const headerOptions = this._header.GetHeaderOptions();
-        const firstRow = new OCRow<T>({ api: this._api, dom: this._dom, headers: headerOptions });
+        const firstRow = new OCRow<T>({ api: this._api, dom: this._dom, header: this._header });
         const firstRowElemet = firstRow.GetElement();
         this._dom.ScrollBody.append(firstRowElemet);
         this._rows.push(firstRow);
@@ -102,7 +101,7 @@ export default class OCScrollBody<T>{
             const newRow = new OCRow<T>({
                 api: this._api,
                 dom: this._dom,
-                headers: headerOptions,
+                header: this._header,
                 prevRow: prevRow,
             });
             const newRowEl = newRow.GetElement();

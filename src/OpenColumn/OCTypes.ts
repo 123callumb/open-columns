@@ -1,3 +1,4 @@
+import OCDataHeader from "./OCDataHeader";
 import OCDom from "./OCDom";
 import OCRow from "./OCRow";
 import OpenColumn from "./OpenColumn";
@@ -50,7 +51,7 @@ export interface OCDataResponse<T> {
 export interface OCRowOptions<T> {
     api: OpenColumn<T>;
     dom: OCDom;
-    headers: OCDataHeaderOptions<T>[];
+    header: OCDataHeader<T>;
     data?: T;
     prevRow?: OCRow<T>;
     nextRow?: OCRow<T>;
