@@ -44,6 +44,13 @@ export default class OCScrollBody<T>{
         if (Math.abs(dY) <= (this._options?.sensY ?? 0))
             dY = 0;
 
+        // Hard limits here for scrollbody - TODO: should change to a nice smooth bounce animation
+        // if you try to scrol out of bounds to make it feel more responsive, obviously can disable
+        // in options.
+        const currentX = this._header.GetTranslatedX();
+        if((currentX + dX) < 0)
+            dX = 0;
+        
         this._header.Translate(dX);
         this._rows.forEach(f => {
             // Move row based on scroll
@@ -95,7 +102,7 @@ export default class OCScrollBody<T>{
         this._dom.ScrollBody.append(firstRowElemet);
         this._rows.push(firstRow);
 
-        const rowToFill = Math.floor(this._dom.ScrollBody.getBoundingClientRect().height / firstRowElemet.clientHeight);
+        const rowToFill = Math.floor((this._dom.ScrollBody.getBoundingClientRect().height + 200) / firstRowElemet.clientHeight);
         for (let index = 1; index <= rowToFill; index++) {
             const prevRow = this._rows[index - 1];
             const newRow = new OCRow<T>({

@@ -108,7 +108,7 @@ export default class OCRow<T> {
         if ((boundingRect.bottom + offset) < parentRect.top)
             return OCRowPositionState.Above;
 
-        if ((boundingRect.top + offset) > parentRect.bottom)
+        if ((boundingRect.top - offset) > parentRect.bottom)
             return OCRowPositionState.Below;
 
         return OCRowPositionState.Visible;
