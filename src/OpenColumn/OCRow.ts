@@ -29,7 +29,6 @@ export default class OCRow<T> {
         this.GetElement = this.GetElement.bind(this);
         this.SetNextRow = this.SetNextRow.bind(this);
         this.SetPrevRow = this.SetPrevRow.bind(this);
-        this.SetDrawPosition = this.SetDrawPosition.bind(this);
 
         this.Draw(true);
     }
@@ -40,7 +39,7 @@ export default class OCRow<T> {
 
     private Draw(refresh: boolean = false) {
         if (!this._element) {
-            this._element = document.createElement('div');
+            this._element = document.createElement('tr');
             this._element.classList.add(OCAttribute.CLASS.ScrollBody_Row);
         }
 
@@ -54,7 +53,7 @@ export default class OCRow<T> {
                 const cellElement = cell.GetElement();
                 this._element.append(cellElement);
 
-                if (header.postCellRender)
+                if (header.postCellRender) // hmmm maybe this should be moved to the end idk what people would use this for 
                     header.postCellRender(cellElement, cell.GetData(), this._data, this._api);
 
                 this._cells.push(cell);
@@ -63,12 +62,8 @@ export default class OCRow<T> {
             if (this._cells.length === 0)
                 return;
 
-            this._cells.forEach(f => {
-                f.Update(this._data);
-            });
+            this._cells.forEach(f => f.Update(this._data));
         }
-
-        this.SetDrawPosition();
     }
 
     public Update(data: T) {
@@ -79,23 +74,6 @@ export default class OCRow<T> {
 
     public GetData() {
         return this._data;
-    }
-
-    public GetTranslatedCoords(): { x: number, y: number } {
-        // using replace to see if it is faster than new WebKitCSSMatrix(style.transform);
-        const brokenTranslate = this._element.style.transform
-            .replace("translate(", "")
-            .replace("px", "")
-            .replace(")", "")
-            .split(',');
-        return { x: parseFloat(brokenTranslate[0]), y: parseFloat(brokenTranslate[1]) }
-    }
-
-    public Translate(dX: number, dY: number): void {
-        const currentPos = this.GetTranslatedCoords();
-        const newX = currentPos.x + dX;
-        const newY = currentPos.y + dY;
-        this._element.style.transform = `translate(${newX}px, ${newY}px)`;
     }
 
     public GetPositionState(offset: number = 0): OCRowPositionState {
@@ -122,27 +100,27 @@ export default class OCRow<T> {
         this._prevRow = row;
     }
 
-    private SetDrawPosition(): void {
-        if (this._prevRow && this._nextRow)
-            Throw("Cannot draw row between previous and next row just yet! Will require a dom reshuffle!");
+    // private SetDrawPosition(): void {
+    //     if (this._prevRow && this._nextRow)
+    //         Throw("Cannot draw row between previous and next row just yet! Will require a dom reshuffle!");
 
-        let rowTop = 0;
-        
-        // If exisitng row above or below then get position of row and see where it needs to be inserted
-        if (this._prevRow) {
-            rowTop = this._prevRow.GetElement().getBoundingClientRect().bottom;
-        } else if (this._nextRow) {
-            // get row height by appending a hidden duplicate to scrollbody
-            const scrollbody = this._nextRow.GetElement().parentElement;
-            const simulatedRow = this.GetElement().cloneNode(true) as HTMLElement;
-            simulatedRow.style.opacity = '0';
-            scrollbody.append(simulatedRow);
-            const simulatedRect = simulatedRow.getBoundingClientRect();
-            rowTop = this._nextRow.GetElement().getBoundingClientRect().top - simulatedRect.height;
-            simulatedRow.remove();
-        }
-        const headerX = this._header.GetTranslatedX();
-        this._element.style.transform = `translate(${headerX}px, ${rowTop - 58.5}px)`; // Try not to  add any other transform properties or will have to use WebkitCssMatrix class
-        this._element.style.transition = 'all linear 0.1';
-    }
+    //     let rowTop = 0;
+
+    //     // If exisitng row above or below then get position of row and see where it needs to be inserted
+    //     if (this._prevRow) {
+    //         rowTop = this._prevRow.GetElement().getBoundingClientRect().bottom;
+    //     } else if (this._nextRow) {
+    //         // get row height by appending a hidden duplicate to scrollbody
+    //         const scrollbody = this._nextRow.GetElement().parentElement;
+    //         const simulatedRow = this.GetElement().cloneNode(true) as HTMLElement;
+    //         simulatedRow.style.opacity = '0';
+    //         scrollbody.append(simulatedRow);
+    //         const simulatedRect = simulatedRow.getBoundingClientRect();
+    //         rowTop = this._nextRow.GetElement().getBoundingClientRect().top - simulatedRect.height;
+    //         simulatedRow.remove();
+    //     }
+    //     const headerX = this._header.GetTranslatedX();
+    //     this._element.style.transform = `translate(${headerX}px, ${rowTop - 58.5}px)`; // Try not to  add any other transform properties or will have to use WebkitCssMatrix class
+    //     this._element.style.transition = 'all linear 0.1';
+    // }
 }

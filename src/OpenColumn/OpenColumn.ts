@@ -28,10 +28,10 @@ export default class OpenColumn<T = unknown> {
         this._scrollBody = new OCScrollBody(this, this._options.scroller, this._dom, this._header);
     }
 
-    public GetRow(index: number): OCRow<T> {
+    public GetRow(blockIndex: number, index: number): OCRow<T> {
         if (!this._scrollBody)
             Throw("Scrollbody is not initialised. Cannot access rows.");
 
-        return this._scrollBody.GetRow(index);
+        return this._scrollBody.GetRow(blockIndex, index);
     }
 }

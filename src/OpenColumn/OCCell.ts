@@ -7,6 +7,8 @@ export default class OCCell<T> {
     private readonly _header: OCDataHeaderOptions<T>;
     private _element: HTMLElement;
     private _rowData?: T;
+    private _cellData?: unknown;
+    private _rawCellData?: unknown;
 
     constructor(api: OpenColumn<T>, header: OCDataHeaderOptions<T>, rowData?: T) {
         this._header = header;
@@ -23,12 +25,18 @@ export default class OCCell<T> {
 
     private Draw() {
         if (!this._element){
-            this._element = document.createElement('div');
+            this._element = document.createElement('td');
             this._element.classList.add(OCAttribute.CLASS.ScrollBody_Cell);
         }
+        
+        this._rawCellData = this._rowData != null ? (this._rowData as any)[this._header.propertyName] : null;
+        this._cellData = this._rawCellData;
+
+        if (this._header.preCellRender)
+            this._cellData = this._header.preCellRender(this._rawCellData, this._rowData, this._api);
 
         this._element.innerHTML = "";
-        this._element.textContent = `${this.GetData()}`;
+        this._element.textContent = `${this._cellData}`;
     }
 
     public Update(newRowData?: T) {
@@ -39,12 +47,7 @@ export default class OCCell<T> {
     }
 
     public GetData(){
-        // TODO: fix this dumb linitng error that wont let me null coalesce
-        let cellDataToRender: unknown = this._rowData != null ? (this._rowData as any)[this._header.propertyName] : null;
-        if (this._header.preCellRender)
-            cellDataToRender = this._header.preCellRender(cellDataToRender, this._rowData, this._api);
-
-        return cellDataToRender;
+        return this._cellData;
     }
 
     public GetElement() {

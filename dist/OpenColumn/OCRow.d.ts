@@ -12,13 +12,7 @@ export default class OCRow<T> {
     private Draw;
     Update(data: T): void;
     GetData(): T;
-    GetTranslatedCoords(): {
-        x: number;
-        y: number;
-    };
-    Translate(dX: number, dY: number): void;
     GetPositionState(offset?: number): OCRowPositionState;
     SetNextRow(row: OCRow<T>): void;
     SetPrevRow(row: OCRow<T>): void;
-    private SetDrawPosition;
 }

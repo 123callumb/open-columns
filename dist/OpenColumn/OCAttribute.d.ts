@@ -5,6 +5,7 @@ export default class OCAttribute {
         Headers_Contaier: string;
         Header_Cell: string;
         ScrollBody_Container: string;
+        ScrollBody_Block: string;
         ScrollBody_Row: string;
         ScrollBody_Cell: string;
     };

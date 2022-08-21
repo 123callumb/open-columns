@@ -7,5 +7,5 @@ export default class OpenColumn<T = unknown> {
     private _header;
     constructor(options: OpenColumnOptions<T>);
     private Init;
-    GetRow(index: number): OCRow<T>;
+    GetRow(blockIndex: number, index: number): OCRow<T>;
 }

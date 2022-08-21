@@ -5,6 +5,8 @@ export default class OCCell<T> {
     private readonly _header;
     private _element;
     private _rowData?;
+    private _cellData?;
+    private _rawCellData?;
     constructor(api: OpenColumn<T>, header: OCDataHeaderOptions<T>, rowData?: T);
     private Draw;
     Update(newRowData?: T): void;

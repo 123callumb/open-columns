@@ -42,6 +42,8 @@ export interface OCDataResponse<T> {
     filtersRefreshed: boolean;
 }
 export interface OCRowOptions<T> {
+    blockIndex: number;
+    index: number;
     api: OpenColumn<T>;
     dom: OCDom;
     header: OCDataHeader<T>;

@@ -8,12 +8,11 @@ export default class OCScrollBody<T> {
     private readonly _api;
     private readonly _header;
     private readonly _options;
-    private _rows;
+    private _blocks;
     constructor(api: OpenColumn<T>, options: OCScrollerOptions, dom: OCDom, header: OCDataHeader<T>);
     private RegisterEvents;
     private OnScroll;
     Scroll(dX: number, dY: number): void;
-    private InitRows;
-    RowIsDrawn(row: number | OCRow<T>): boolean;
-    GetRow(index: number): OCRow<T>;
+    private Init;
+    GetRow(blockIndex: number, index: number): OCRow<T>;
 }
