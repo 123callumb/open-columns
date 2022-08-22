@@ -3,6 +3,7 @@ import OCAttribute from "./OCAttribute";
 import OCDataHeader from "./OCDataHeader";
 import OCDom from "./OCDom";
 import OCRow from "./OCRow";
+import { OCPositionState } from "./OCTypes";
 import OpenColumn from "./OpenColumn";
 
 export default class OCRowBlock<T> {
@@ -31,11 +32,16 @@ export default class OCRowBlock<T> {
         }));
 
         this.Draw = this.Draw.bind(this);
+        this.Append = this.Append.bind(this);
+        this.Prepend = this.Prepend.bind(this);
         this.Translate = this.Translate.bind(this);
         this.GetElement = this.GetElement.bind(this);
         this.UpdateData = this.UpdateData.bind(this);
+        this.SetPosition = this.SetPosition.bind(this);
         this.SetNextBlock = this.SetNextBlock.bind(this);
         this.SetPrevBlock = this.SetPrevBlock.bind(this);
+        this.GetPositionState = this.GetPositionState.bind(this);
+        this.GetSimulatedRect = this.GetSimulatedRect.bind(this);
         this.GetTranslatedCoords = this.GetTranslatedCoords.bind(this);
 
         this.Draw();
@@ -63,11 +69,14 @@ export default class OCRowBlock<T> {
     }
 
     public Translate(dX: number, dY: number) {
-        console.log("yeah we hit translate method")
         const currentPos = this.GetTranslatedCoords();
         const newX = currentPos.x + dX;
         const newY = currentPos.y + dY;
-        this._element.style.transform = `translate(${newX}px, ${newY}px)`;
+        this.SetPosition(newX, newY);
+    }
+    
+    private SetPosition(x: number, y: number){
+        this._element.style.transform = `translate(${x}px, ${y}px)`;
     }
 
     public GetTranslatedCoords(): { x: number, y: number } {
@@ -96,7 +105,77 @@ export default class OCRowBlock<T> {
         return this._element;
     }
 
+    public Append(prevBlock: OCRowBlock<T>){
+        // Create link refs
+        prevBlock.SetNextBlock(this);
+        this._prevBlock = prevBlock;
+
+        // Set pos
+        const prevRect = prevBlock.GetElement().getBoundingClientRect();
+        const scrollBody = this._dom.ScrollBody;
+        const scrollBodyY = scrollBody.getBoundingClientRect().y;
+        const currentX = this._header.GetX();
+        this.SetPosition(currentX, prevRect.bottom - scrollBodyY); 
+
+        // Add to dom
+        scrollBody.append(this._element);
+    }
+
+    public Prepend(nextBlock: OCRowBlock<T>){
+        // Create link
+        nextBlock.SetPrevBlock(this);
+        this._nextBlock = nextBlock;
+
+        // Set position in scrollbody
+        const nextRect = this._nextBlock.GetElement().getBoundingClientRect();
+        const currentX = this._header.GetX();
+        const scrollBody = this._dom.ScrollBody;
+        const scrollBodyY = scrollBody.getBoundingClientRect().y;
+        const simRect = this.GetSimulatedRect();
+        this.SetPosition(currentX, nextRect.top - simRect.height - scrollBodyY);
+
+        // Add to dom
+        scrollBody.prepend(this._element);
+    }
+
+    public Detatch(){
+        const scrollBody = this._dom.ScrollBody;
+        if(!scrollBody.contains(this._element))
+            Throw("Cannot detatch element that does not exist in the scrollbody.");
+        
+        scrollBody.removeChild(this._element);
+    }
+
     public GetRow(index: number): OCRow<T> {
         return this._rows[index];
+    }
+
+    private GetSimulatedRect() : DOMRect {
+        const simBlock = this._element.cloneNode(true) as HTMLTableElement;
+        simBlock.style.opacity = "0 !important"; // hopefully no crazy person overrides the class on the block
+        this._dom.ScrollBody.append(simBlock);
+        const rect = simBlock.getBoundingClientRect();
+        this._dom.ScrollBody.removeChild(simBlock);
+        return rect;
+    }
+
+    public GetPositionState(offset: number = 0): OCPositionState {
+        if (!this._dom.ScrollBody.contains(this._element))
+            return OCPositionState.Removed;
+
+        const boundingRect = this._element.getBoundingClientRect();
+        const parentRect = this._element.parentElement.getBoundingClientRect();
+
+        if ((boundingRect.bottom + offset) < parentRect.top)
+            return OCPositionState.Above;
+
+        if ((boundingRect.top - offset) > parentRect.bottom)
+            return OCPositionState.Below;
+
+        return OCPositionState.Visible;
+    }
+
+    public GetDrawIndex(): number {
+        return this._drawIndex;
     }
 }

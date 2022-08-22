@@ -1,13 +1,14 @@
-import { Throw } from "../util/HelperFunctions";
 import OCAttribute from "./OCAttribute";
 import OCCell from "./OCCell";
 import OCDataHeader from "./OCDataHeader";
-import { OCRowOptions, OCRowPositionState } from "./OCTypes";
+import { OCRowOptions, OCPositionState } from "./OCTypes";
 import OpenColumn from "./OpenColumn";
 
 export default class OCRow<T> {
     private readonly _api: OpenColumn<T>;
     private readonly _header: OCDataHeader<T>;
+    private readonly _blockIndex: number;
+    private readonly _index: number;
     private _element: HTMLElement;
     private _prevRow?: OCRow<T>;
     private _nextRow?: OCRow<T>;
@@ -15,10 +16,12 @@ export default class OCRow<T> {
     private _data?: T;
 
     constructor(options: OCRowOptions<T>) {
+        this._cells = [];
         this._api = options.api;
         this._data = options.data;
+        this._index = options.index;
         this._header = options.header;
-        this._cells = [];
+        this._blockIndex = options.blockIndex;
 
         this._nextRow = options.nextRow;
         this._prevRow = options.prevRow;
@@ -76,20 +79,20 @@ export default class OCRow<T> {
         return this._data;
     }
 
-    public GetPositionState(offset: number = 0): OCRowPositionState {
+    public GetPositionState(offset: number = 0): OCPositionState {
         if (!this._element)
-            return OCRowPositionState.Removed;
+            return OCPositionState.Removed;
 
         const boundingRect = this._element.getBoundingClientRect();
         const parentRect = this._element.parentElement.getBoundingClientRect();
 
         if ((boundingRect.bottom + offset) < parentRect.top)
-            return OCRowPositionState.Above;
+            return OCPositionState.Above;
 
         if ((boundingRect.top - offset) > parentRect.bottom)
-            return OCRowPositionState.Below;
+            return OCPositionState.Below;
 
-        return OCRowPositionState.Visible;
+        return OCPositionState.Visible;
     }
 
     public SetNextRow(row: OCRow<T>): void {
@@ -100,27 +103,11 @@ export default class OCRow<T> {
         this._prevRow = row;
     }
 
-    // private SetDrawPosition(): void {
-    //     if (this._prevRow && this._nextRow)
-    //         Throw("Cannot draw row between previous and next row just yet! Will require a dom reshuffle!");
+    public GetRowIndex(): number {
+        return this._index;
+    }
 
-    //     let rowTop = 0;
-
-    //     // If exisitng row above or below then get position of row and see where it needs to be inserted
-    //     if (this._prevRow) {
-    //         rowTop = this._prevRow.GetElement().getBoundingClientRect().bottom;
-    //     } else if (this._nextRow) {
-    //         // get row height by appending a hidden duplicate to scrollbody
-    //         const scrollbody = this._nextRow.GetElement().parentElement;
-    //         const simulatedRow = this.GetElement().cloneNode(true) as HTMLElement;
-    //         simulatedRow.style.opacity = '0';
-    //         scrollbody.append(simulatedRow);
-    //         const simulatedRect = simulatedRow.getBoundingClientRect();
-    //         rowTop = this._nextRow.GetElement().getBoundingClientRect().top - simulatedRect.height;
-    //         simulatedRow.remove();
-    //     }
-    //     const headerX = this._header.GetTranslatedX();
-    //     this._element.style.transform = `translate(${headerX}px, ${rowTop - 58.5}px)`; // Try not to  add any other transform properties or will have to use WebkitCssMatrix class
-    //     this._element.style.transition = 'all linear 0.1';
-    // }
+    public GetBlockIndex(): number {
+        return this._blockIndex;
+    }
 }

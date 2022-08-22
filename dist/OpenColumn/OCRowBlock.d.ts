@@ -1,6 +1,7 @@
 import OCDataHeader from "./OCDataHeader";
 import OCDom from "./OCDom";
 import OCRow from "./OCRow";
+import { OCPositionState } from "./OCTypes";
 import OpenColumn from "./OpenColumn";
 export default class OCRowBlock<T> {
     private readonly _api;
@@ -16,6 +17,7 @@ export default class OCRowBlock<T> {
     private Draw;
     UpdateData(data: T[], startIndex: number): void;
     Translate(dX: number, dY: number): void;
+    private SetPosition;
     GetTranslatedCoords(): {
         x: number;
         y: number;
@@ -23,5 +25,11 @@ export default class OCRowBlock<T> {
     SetNextBlock(block: OCRowBlock<T>): void;
     SetPrevBlock(block: OCRowBlock<T>): void;
     GetElement(): HTMLElement;
+    Append(prevBlock: OCRowBlock<T>): void;
+    Prepend(nextBlock: OCRowBlock<T>): void;
+    Detatch(): void;
     GetRow(index: number): OCRow<T>;
+    private GetSimulatedRect;
+    GetPositionState(offset?: number): OCPositionState;
+    GetDrawIndex(): number;
 }

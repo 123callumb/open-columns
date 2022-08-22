@@ -49,7 +49,7 @@ export default class OCDataHeader<T> {
         this._dom.Headers.style.transform = `translate(${0}px)`;
     }
 
-    public GetTranslatedX(): number {
+    public GetX(): number {
         // using replace to see if it is faster than new WebKitCSSMatrix(style.transform).m41;
         const brokenTranslate = this._dom.Headers.style.transform
             .replace("translate(", "")
@@ -60,7 +60,7 @@ export default class OCDataHeader<T> {
     }
 
     public Translate(dX: number) : void {
-        const newX = this.GetTranslatedX() + dX;
+        const newX = this.GetX() + dX;
         this._dom.Headers.style.transform = `translate(${newX}px)`;
     }
 }

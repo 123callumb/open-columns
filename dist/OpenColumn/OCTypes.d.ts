@@ -55,7 +55,7 @@ export interface OCScrollerOptions {
     sensX?: number;
     sensY?: number;
 }
-export declare enum OCRowPositionState {
+export declare enum OCPositionState {
     Above = 1,
     Below = 2,
     Visible = 3,

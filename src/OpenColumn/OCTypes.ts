@@ -64,7 +64,7 @@ export interface OCScrollerOptions {
     sensY?: number
 }
 
-export enum OCRowPositionState {
+export enum OCPositionState {
     Above = 1,
     Below = 2,
     Visible = 3,
