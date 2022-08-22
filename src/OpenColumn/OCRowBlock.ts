@@ -74,8 +74,8 @@ export default class OCRowBlock<T> {
         const newY = currentPos.y + dY;
         this.SetPosition(newX, newY);
     }
-    
-    private SetPosition(x: number, y: number){
+
+    private SetPosition(x: number, y: number) {
         this._element.style.transform = `translate(${x}px, ${y}px)`;
     }
 
@@ -101,11 +101,11 @@ export default class OCRowBlock<T> {
         this._prevBlock = block;
     }
 
-    public GetElement(){
+    public GetElement() {
         return this._element;
     }
 
-    public Append(prevBlock: OCRowBlock<T>){
+    public Append(prevBlock: OCRowBlock<T>) {
         // Create link refs
         prevBlock.SetNextBlock(this);
         this._prevBlock = prevBlock;
@@ -115,13 +115,13 @@ export default class OCRowBlock<T> {
         const scrollBody = this._dom.ScrollBody;
         const scrollBodyY = scrollBody.getBoundingClientRect().y;
         const currentX = this._header.GetX();
-        this.SetPosition(currentX, prevRect.bottom - scrollBodyY); 
+        this.SetPosition(currentX, prevRect.bottom - scrollBodyY);
 
         // Add to dom
         scrollBody.append(this._element);
     }
 
-    public Prepend(nextBlock: OCRowBlock<T>){
+    public Prepend(nextBlock: OCRowBlock<T>) {
         // Create link
         nextBlock.SetPrevBlock(this);
         this._nextBlock = nextBlock;
@@ -138,11 +138,11 @@ export default class OCRowBlock<T> {
         scrollBody.prepend(this._element);
     }
 
-    public Detatch(){
+    public Detatch() {
         const scrollBody = this._dom.ScrollBody;
-        if(!scrollBody.contains(this._element))
+        if (!scrollBody.contains(this._element))
             Throw("Cannot detatch element that does not exist in the scrollbody.");
-        
+
         scrollBody.removeChild(this._element);
     }
 
@@ -150,7 +150,7 @@ export default class OCRowBlock<T> {
         return this._rows[index];
     }
 
-    private GetSimulatedRect() : DOMRect {
+    private GetSimulatedRect(): DOMRect {
         const simBlock = this._element.cloneNode(true) as HTMLTableElement;
         simBlock.style.opacity = "0 !important"; // hopefully no crazy person overrides the class on the block
         this._dom.ScrollBody.append(simBlock);
@@ -163,13 +163,13 @@ export default class OCRowBlock<T> {
         if (!this._dom.ScrollBody.contains(this._element))
             return OCPositionState.Removed;
 
-        const boundingRect = this._element.getBoundingClientRect();
         const parentRect = this._element.parentElement.getBoundingClientRect();
-
-        if ((boundingRect.bottom + offset) < parentRect.top)
+        const pos = this.GetTranslatedCoords();
+        if ((pos.y + offset) < parentRect.top)
             return OCPositionState.Above;
 
-        if ((boundingRect.top - offset) > parentRect.bottom)
+        const boundingRect = this._element.getBoundingClientRect();
+        if ((pos.y + boundingRect.height - offset) > parentRect.bottom)
             return OCPositionState.Below;
 
         return OCPositionState.Visible;

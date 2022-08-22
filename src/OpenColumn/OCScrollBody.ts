@@ -41,6 +41,7 @@ export default class OCScrollBody<T>{
     public Scroll(dX: number, dY: number) {
         // TODO: ATM scroling is inverted, didn't realise because empty data and mac trackpad is inverted by default lol
         // - should be easy fix just need to make sure that the maths further below plays along fine with it.
+        // okay no its harder to invert the scrollY, maybe not, im just not thinking about the maths rn 
         if (Math.abs(dX) <= (this._options?.sensX ?? 0))
             dX = 0;
 
@@ -73,42 +74,16 @@ export default class OCScrollBody<T>{
             // Move row based on scroll
             f.Translate(dX, dY)
 
-            // Validate each rows position
-            // const rowPosState = f.GetPositionState();
-            // if (rowPosState === OCRowPositionState.Visible || rowPosState === OCRowPositionState.Removed)
-            //     return;
+            // Get current block position
+            // Just thinkking, can possibly speed this up if you take into account the scroll amount and the size of each block 
+            // and check to calculate if we should do an out of pos check 
+            // not sure tho
+            const blockPos = f.GetPositionState();
+            if(blockPos === OCPositionState.Above){
 
-            // // If code reaches here row must be above or below scroller body
-            // // so it needs to be removed
-            // f.GetElement().remove();
-            // const index = this._rows.indexOf(f);
-            // this._rows.splice(index, 1);
+            }else if(blockPos === OCPositionState.Below){
 
-            // const newRowOpts: OCRowOptions<T> = {
-            //     api: this._api,
-            //     dom: this._dom,
-            //     header: this._header
-            // };
-
-            // // Append next row below
-            // if (rowPosState === OCRowPositionState.Above) {
-            //     const prevRow = this._rows[this._rows.length - 1];
-            //     const newRow = new OCRow<T>({ ...newRowOpts, prevRow });
-
-            //     this._dom.ScrollBody.append(newRow.GetElement());
-            //     prevRow.SetNextRow(newRow);
-            //     this._rows.push(newRow);
-            // }
-
-            // // Append next row above
-            // if (rowPosState === OCRowPositionState.Below) {
-            //     const nextRow = this._rows[0];
-            //     const newRow = new OCRow({ ...newRowOpts, nextRow });
-
-            //     this._dom.ScrollBody.prepend(newRow.GetElement());
-            //     nextRow.SetPrevRow(newRow);
-            //     this._rows.unshift(newRow);
-            // }
+            }
         });
     }
 
