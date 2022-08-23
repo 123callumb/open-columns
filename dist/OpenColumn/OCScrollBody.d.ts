@@ -8,6 +8,7 @@ export default class OCScrollBody<T> {
     private readonly _api;
     private readonly _header;
     private readonly _options;
+    private readonly _maxBlockCount;
     private _blocks;
     constructor(api: OpenColumn<T>, options: OCScrollerOptions, dom: OCDom, header: OCDataHeader<T>);
     private RegisterEvents;
