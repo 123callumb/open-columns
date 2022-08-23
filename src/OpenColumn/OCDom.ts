@@ -31,7 +31,6 @@ export default class OCDom {
     }
 
     public GetScrollDOMTop(){
-        return this._scrollBodyOffset;
-    
+        return this._scrollBodyOffset;  
     }
 }

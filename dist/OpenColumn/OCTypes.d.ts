@@ -18,8 +18,8 @@ export interface OCHeaderOptions<T> {
     render?: (api?: OpenColumn<T>) => HTMLElement | string;
 }
 export interface OCDataHeaderOptions<T> extends OCHeaderOptions<T> {
-    propertyName: keyof T;
-    preCellRender?: (data?: unknown, rowData?: T, api?: OpenColumn<T>) => unknown;
+    propertyName?: keyof T;
+    preCellRender?: (data?: unknown, row?: OCRow<T>, api?: OpenColumn<T>) => unknown;
     postCellRender?: (cell: HTMLElement, data?: unknown, rowData?: T, api?: OpenColumn<T>) => void;
 }
 export interface OCDataOptions<T, Request = OCDataRequest, Response = OCDataResponse<T>> {

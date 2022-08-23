@@ -52,7 +52,7 @@ export default class OCRow<T> {
 
             // Maybe do this filtering as an option on for the GetHeaderOptions method
             this._header.GetHeaderOptions().filter(f => f.propertyName !== null || f.preCellRender).forEach(header => {
-                const cell = new OCCell<T>(this._api, header, this._data);
+                const cell = new OCCell<T>(this._api, header, this);
                 const cellElement = cell.GetElement();
                 this._element.append(cellElement);
 
@@ -65,7 +65,7 @@ export default class OCRow<T> {
             if (this._cells.length === 0)
                 return;
 
-            this._cells.forEach(f => f.Update(this._data));
+            this._cells.forEach(f => f.Draw());
         }
     }
 
