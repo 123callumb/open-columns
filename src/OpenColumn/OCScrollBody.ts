@@ -73,11 +73,11 @@ export default class OCScrollBody<T>{
         this._header.Translate(dX);
         this._blocks.forEach(block => {
             // Move row based on scroll
-            block.Translate(dX, dY)
+            block.Translate(dX, dY);
         });
 
         // Get current block position that is in the middle of the exisitng blocks
-        // Just thinkking, can possibly speed this up if you take into account the scroll amount and the size of each block 
+        // Just thinking, can possibly speed this up if you take into account the scroll amount and the size of each block 
         // and check to calculate if we should do an out of pos check 
         // not sure tho
         const blockPos = this._blocks[Math.floor(this._blocks.length / 2)].GetPositionState();
@@ -115,7 +115,7 @@ export default class OCScrollBody<T>{
                 block.Append(this._blocks[i - 1]);
 
             this._blocks.push(block);
-        })
+        });
     }
 
     public GetRow(blockIndex: number, index: number): OCRow<T> {
