@@ -11,6 +11,8 @@ export default class OCScrollBody<T>{
     private readonly _header: OCDataHeader<T>;
     private readonly _options: OCScrollerOptions;
     private readonly _maxBlockCount: number = 6; // temp for now whilst building table
+    private _bound?: number;
+    private _dyLimit: number;
     private _blocks: OCRowBlock<T>[] = [];
 
     constructor(api: OpenColumn<T>, options: OCScrollerOptions, dom: OCDom, header: OCDataHeader<T>) {
@@ -36,13 +38,10 @@ export default class OCScrollBody<T>{
     private OnScroll(e: WheelEvent) {
         e.preventDefault();
 
-        this.Scroll(e.deltaX, e.deltaY);
+        this.Scroll(e.deltaX, e.deltaY * -1); // invert scroll here if user wants that
     }
 
     public Scroll(dX: number, dY: number) {
-        // TODO: ATM scroling is inverted, didn't realise because empty data and mac trackpad is inverted by default lol
-        // - should be easy fix just need to make sure that the maths further below plays along fine with it.
-        // okay no its harder to invert the scrollY, maybe not, im just not thinking about the maths rn 
         if (Math.abs(dX) <= (this._options?.sensX ?? 0))
             dX = 0;
 
@@ -76,35 +75,27 @@ export default class OCScrollBody<T>{
             block.Translate(dX, dY);
         });
 
-        // Get current block position that is in the middle of the exisitng blocks
-        // Just thinking, can possibly speed this up if you take into account the scroll amount and the size of each block 
-        // and check to calculate if we should do an out of pos check 
-        // not sure tho
-        const blockPos = this._blocks[Math.floor(this._blocks.length / 2)].GetPositionState();
-        const lastBlockIndex = this._blocks.length - 1;
-        if (blockPos === OCPositionState.Above) {
-            // Might be an idea in the future to do a Math.max(this._blocks.map(m => m.GetDrawIndex())) to get the largest draw index
-            // but I hope that the draw order does not get displaced...
-            const lastBlock = this._blocks[lastBlockIndex];
-            const newBlockIndex = lastBlock.GetDrawIndex() + 1;
-            const newBlock = new OCRowBlock<T>(this._api, this._header, this._dom, newBlockIndex, 10);
-            newBlock.Append(lastBlock);
+        if (dY === 0)
+            return;
 
-            this._blocks.splice(0, 1);
-            this._blocks.push(newBlock);
-        }
-        else if (blockPos === OCPositionState.Below) {
-            const firstBlock = this._blocks[0];
-            const newBlockIndex = firstBlock.GetDrawIndex() - 1;
-            const newBlock = new OCRowBlock<T>(this._api, this._header, this._dom, newBlockIndex, 10);
-            newBlock.Prepend(firstBlock);
+        if (Math.abs(dY) > this._dyLimit)
+            dY = dY < 0 ? -this._dyLimit : this._dyLimit;
 
-            this._blocks.splice(lastBlockIndex, 1);
-            this._blocks.unshift(newBlock);
-        }
+        this.UpdateBody(dY);
     }
 
     private Init() {
+        // Set bounds
+        // TODO: Set these bounds based on the average row/block height
+        // so that users can base it around blocks
+        const scrollBodyRect = this._dom.ScrollBody.getBoundingClientRect();
+        const scrollHeight = scrollBodyRect.height;
+        // at setting bounds to 2 x scrollbody height above and below
+        // TODO: in future take which ever number is greater, scrollbody height or 
+        // block height
+        this._bound = scrollHeight;
+        this._dyLimit = Math.ceil(scrollBodyRect.height);
+
         // just prefilling with a random number of blocks for testing
         Array(this._maxBlockCount).fill(null).forEach((f, i) => {
             const block = new OCRowBlock<T>(this._api, this._header, this._dom, i, 10);
@@ -120,5 +111,62 @@ export default class OCScrollBody<T>{
 
     public GetRow(blockIndex: number, index: number): OCRow<T> {
         return this._blocks[blockIndex].GetRow(index);
+    }
+
+    // Append/prepend and remove blocks based on scroll direction
+    // Get current block position that is in the middle of the exisitng blocks
+    // Just thinking, can possibly speed this up if you take into account the scroll amount and the size of each block 
+    // and check to calculate if we should do an out of pos check 
+    // not sure tho
+    private UpdateBody(dY: number) {
+        const isScrollingDown = dY < 0;
+        const upperBlockIndex = 0;
+        const lowerBlockIndex = this._blocks.length - 1;
+        const upperBlock = this._blocks[upperBlockIndex];
+        const lowerBlock = this._blocks[lowerBlockIndex];
+        const upperBlockPos = upperBlock.GetTranslatedCoords();
+        const lowerBlockPos = lowerBlock.GetTranslatedCoords();
+        let modified = false;
+
+        if (isScrollingDown) // scroll down
+        {
+            if (upperBlockPos.y < (-this._bound)) {
+                this._blocks.splice(upperBlockIndex, 1);
+                upperBlock.Detatch();
+                modified = true;
+            }
+
+            if (lowerBlockPos.y < this._bound) {
+                const newBlockIndex = lowerBlock.GetDrawIndex() + 1;
+                const newBlock = new OCRowBlock<T>(this._api, this._header, this._dom, newBlockIndex, 10);
+                lowerBlock.SetNextBlock(newBlock);
+                newBlock.Append(lowerBlock);
+                this._blocks.push(newBlock);
+                modified = true;
+            }
+
+
+        }
+        else // scroll up
+        {
+            if (lowerBlockPos.y > this._bound) {
+                this._blocks.splice(lowerBlockIndex, 1);
+                lowerBlock.Detatch();
+                modified = true;
+            }
+
+            if (upperBlockPos.y > (-this._bound)) {
+                const newBlockIndex = upperBlock.GetDrawIndex() - 1;
+                const newBlock = new OCRowBlock<T>(this._api, this._header, this._dom, newBlockIndex, 10);
+                newBlock.Prepend(upperBlock);
+                upperBlock.SetPrevBlock(newBlock);
+                this._blocks.unshift(newBlock);
+                modified = true;
+            }
+        }
+        
+        // If the body is modified then check again for further changes
+        if(modified)
+            this.UpdateBody(dY);
     }
 }

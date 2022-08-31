@@ -9,6 +9,8 @@ export default class OCScrollBody<T> {
     private readonly _header;
     private readonly _options;
     private readonly _maxBlockCount;
+    private _bound?;
+    private _dyLimit;
     private _blocks;
     constructor(api: OpenColumn<T>, options: OCScrollerOptions, dom: OCDom, header: OCDataHeader<T>);
     private RegisterEvents;
@@ -16,4 +18,5 @@ export default class OCScrollBody<T> {
     Scroll(dX: number, dY: number): void;
     private Init;
     GetRow(blockIndex: number, index: number): OCRow<T>;
+    private UpdateBody;
 }

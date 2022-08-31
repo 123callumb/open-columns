@@ -55,7 +55,7 @@ export default class OCRowBlock<T> {
             tbody.append(...this._rows.map(m => m.GetElement()));
             this._element.append(tbody);
             this._element.classList.add(OCAttribute.CLASS.ScrollBody_Block)
-            this._element.style.transform = `translate(${0}px, ${0}px)`;
+            this.SetPosition(0, 0);
         }
     }
 
@@ -76,7 +76,7 @@ export default class OCRowBlock<T> {
     }
 
     private SetPosition(x: number, y: number) {
-        this._element.style.transform = `translate(${x}px, ${y}px)`;
+        this._element.style.transform = `translate(${x}px, ${y}px)`; 
     }
 
     public GetTranslatedCoords(): { x: number, y: number } {
