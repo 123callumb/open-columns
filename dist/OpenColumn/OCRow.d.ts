@@ -1,4 +1,4 @@
-import { OCRowOptions, OCPositionState } from "./OCTypes";
+import { OCRowOptions } from "./OCTypes";
 export default class OCRow<T> {
     private readonly _api;
     private readonly _header;
@@ -14,7 +14,6 @@ export default class OCRow<T> {
     private Draw;
     Update(data: T): void;
     GetData(): T;
-    GetPositionState(offset?: number): OCPositionState;
     SetNextRow(row: OCRow<T>): void;
     SetPrevRow(row: OCRow<T>): void;
     GetRowIndex(): number;

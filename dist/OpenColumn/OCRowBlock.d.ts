@@ -1,7 +1,6 @@
 import OCDataHeader from "./OCDataHeader";
 import OCDom from "./OCDom";
 import OCRow from "./OCRow";
-import { OCPositionState } from "./OCTypes";
 import OpenColumn from "./OpenColumn";
 export default class OCRowBlock<T> {
     private readonly _api;
@@ -30,6 +29,5 @@ export default class OCRowBlock<T> {
     Detatch(): void;
     GetRow(index: number): OCRow<T>;
     private GetSimulatedRect;
-    GetPositionState(offset?: number): OCPositionState;
     GetDrawIndex(): number;
 }

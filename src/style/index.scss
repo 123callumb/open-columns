@@ -1,9 +1,9 @@
-.OC-Wrapper-Contaier {
+.OC-Wrapper-Container {
     display: flex;
     flex-direction: column;
     overflow: hidden;
 
-    .OC-Headers-Container{
+    .OC-Headers-Container {
         min-height: 4px;
         background-color: rgb(197, 242, 242);
         display: flex;
@@ -13,24 +13,74 @@
         }
     }
 
-    .OC-ScrollBody-Container {
+    .OC-Body {
+        display: flex;
+        flex-direction: row;
         flex: 1;
-        background-color: aliceblue;
-        overflow: hidden;
-        position: relative;
 
-        .OC-ScrollBody-Block {
-            position: absolute;
-            border-top: 2px solid greenyellow;
-            
-            .OC-ScrollBody-Row {
-                border-top: 1px dashed rgba(40, 40, 40, 0.3);
-    
-                .OC-ScrollBody-Cell {
-                    border-right: 1px solid rgb(40, 40, 40);
+        .OC-ScrollBody-Container {
+            flex: 1;
+            background-color: aliceblue;
+            overflow: hidden;
+            position: relative;
+
+            .OC-ScrollBody-Block {
+                position: absolute;
+                border-top: 2px solid greenyellow;
+
+                .OC-ScrollBody-Row {
+                    border-top: 1px dashed rgba(40, 40, 40, 0.3);
+
+                    .OC-ScrollBody-Cell {
+                        border-right: 1px solid rgb(40, 40, 40);
+                    }
                 }
             }
         }
+    }
 
+    .OC-ScrollBar {
+        display: flex;
+        background-color: beige;
+
+        .OC-ScrollBar-Container {
+            flex: 1;
+
+            .OC-ScrollBar-Bar {
+                background-color: black;
+            }
+        }
+
+        &.OC-ScrollBar-Vertical-Container {
+            flex-direction: column;
+            width: 10px;
+            height: 100%;
+
+            .OC-ScrollBar-Bar {
+                height: 50px;
+                width: 100%;
+            }
+
+            .OC-ScrollBar-ButtonStart, .OC-ScrollBar-ButtonEnd {
+                height: 20px;
+                width: 100%;
+            }
+        }
+
+        &.OC-ScrollBar-Horizontal-Container {
+            flex-direction: row;
+            width: 100%;
+            height: 10px;
+
+            .OC-ScrollBar-Bar {
+                width: 50px;
+                height: 100%;
+            }
+
+            .OC-ScrollBar-ButtonStart, .OC-ScrollBar-ButtonEnd {
+                width: 20px;
+                height: 100%;
+            }
+        }
     }
 }

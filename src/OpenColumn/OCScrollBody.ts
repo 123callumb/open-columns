@@ -3,7 +3,7 @@ import OCDom from "./OCDom";
 import OpenColumn from "./OpenColumn";
 import OCRow from "./OCRow";
 import OCRowBlock from './OCRowBlock';
-import { OCPositionState, OCScrollerOptions } from "./OCTypes";
+import { OCScrollerOptions } from "./OCTypes";
 
 export default class OCScrollBody<T>{
     private readonly _dom: OCDom;

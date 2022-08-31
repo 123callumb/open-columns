@@ -3,7 +3,6 @@ import OCAttribute from "./OCAttribute";
 import OCDataHeader from "./OCDataHeader";
 import OCDom from "./OCDom";
 import OCRow from "./OCRow";
-import { OCPositionState } from "./OCTypes";
 import OpenColumn from "./OpenColumn";
 
 export default class OCRowBlock<T> {
@@ -40,7 +39,6 @@ export default class OCRowBlock<T> {
         this.SetPosition = this.SetPosition.bind(this);
         this.SetNextBlock = this.SetNextBlock.bind(this);
         this.SetPrevBlock = this.SetPrevBlock.bind(this);
-        this.GetPositionState = this.GetPositionState.bind(this);
         this.GetSimulatedRect = this.GetSimulatedRect.bind(this);
         this.GetTranslatedCoords = this.GetTranslatedCoords.bind(this);
 
@@ -157,22 +155,6 @@ export default class OCRowBlock<T> {
         const rect = simBlock.getBoundingClientRect();
         this._dom.ScrollBody.removeChild(simBlock);
         return rect;
-    }
-
-    public GetPositionState(offset: number = 0): OCPositionState {
-        if (!this._dom.ScrollBody.contains(this._element))
-            return OCPositionState.Removed;
-
-        const parentRect = this._element.parentElement.getBoundingClientRect();
-        const pos = this.GetTranslatedCoords();
-        if ((pos.y + offset) < parentRect.top)
-            return OCPositionState.Above;
-
-        const boundingRect = this._element.getBoundingClientRect();
-        if ((pos.y + boundingRect.height - offset) > parentRect.bottom)
-            return OCPositionState.Below;
-
-        return OCPositionState.Visible;
     }
 
     public GetDrawIndex(): number {

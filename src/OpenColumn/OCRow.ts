@@ -79,22 +79,6 @@ export default class OCRow<T> {
         return this._data;
     }
 
-    public GetPositionState(offset: number = 0): OCPositionState {
-        if (!this._element)
-            return OCPositionState.Removed;
-
-        const boundingRect = this._element.getBoundingClientRect();
-        const parentRect = this._element.parentElement.getBoundingClientRect();
-
-        if ((boundingRect.bottom + offset) < parentRect.top)
-            return OCPositionState.Above;
-
-        if ((boundingRect.top - offset) > parentRect.bottom)
-            return OCPositionState.Below;
-
-        return OCPositionState.Visible;
-    }
-
     public SetNextRow(row: OCRow<T>): void {
         this._nextRow = row;
     }

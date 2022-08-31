@@ -2,6 +2,8 @@ import { OpenColumnOptions } from './OCTypes';
 import OCDom from './OCDom';
 import OCScrollBody from './OCScrollBody';
 import OCDataHeader from './OCDataHeader';
+import OCHorizontalScrollBar from './OCHorizontalScrollBar';
+import OCVerticalScrollBar from './OCVerticalScrollBar';
 import { Throw, OnDomReady } from '../util/HelperFunctions';
 import OCRow from './OCRow';
 
@@ -10,6 +12,8 @@ export default class OpenColumn<T = unknown> {
     private _dom: OCDom;
     private _scrollBody: OCScrollBody<T>;
     private _header: OCDataHeader<T>;
+    private _horizontalScrollBar: OCHorizontalScrollBar<T>;
+    private _verticalScrollBar: OCVerticalScrollBar<T>;
 
     constructor(options: OpenColumnOptions<T>) {
         this._options = options;
@@ -24,8 +28,10 @@ export default class OpenColumn<T = unknown> {
             Throw("Cannot initialise without a configured set of options.");
 
         this._dom = new OCDom(this._options.selector);
-        this._header = new OCDataHeader<T>(this, this._dom, this._options.headers);
+        this._header = new OCDataHeader(this, this._dom, this._options.headers);
         this._scrollBody = new OCScrollBody(this, this._options.scroller, this._dom, this._header);
+        this._horizontalScrollBar = new OCHorizontalScrollBar(this, this._dom);
+        this._verticalScrollBar = new OCVerticalScrollBar(this, this._dom);
     }
 
     public GetRow(blockIndex: number, index: number): OCRow<T> {
