@@ -1,3 +1,4 @@
+import OCCell from "./OCCell";
 import { OCRowOptions } from "./OCTypes";
 export default class OCRow<T> {
     private readonly _api;
@@ -18,4 +19,5 @@ export default class OCRow<T> {
     SetPrevRow(row: OCRow<T>): void;
     GetRowIndex(): number;
     GetBlockIndex(): number;
+    GetCells(): OCCell<T>[];
 }

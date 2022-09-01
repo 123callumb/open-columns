@@ -1,7 +1,7 @@
 import OCAttribute from "./OCAttribute";
 import OCCell from "./OCCell";
 import OCDataHeader from "./OCDataHeader";
-import { OCRowOptions, OCPositionState } from "./OCTypes";
+import { OCRowOptions } from "./OCTypes";
 import OpenColumn from "./OpenColumn";
 
 export default class OCRow<T> {
@@ -51,13 +51,14 @@ export default class OCRow<T> {
             this._element.innerHTML = "";
 
             // Maybe do this filtering as an option on for the GetHeaderOptions method
-            this._header.GetHeaderOptions().filter(f => f.propertyName !== null || f.preCellRender).forEach(header => {
+            this._header.GetHeaders().filter(f => f.CanRender()).forEach(header => {
                 const cell = new OCCell<T>(this._api, header, this);
                 const cellElement = cell.GetElement();
+                const headerOptions = header.GetHeaderOptions();
                 this._element.append(cellElement);
 
-                if (header.postCellRender) // hmmm maybe this should be moved to the end idk what people would use this for 
-                    header.postCellRender(cellElement, cell.GetData(), this._data, this._api);
+                if (headerOptions.postCellRender) // hmmm maybe this should be moved to the end idk what people would use this for 
+                    headerOptions.postCellRender(cellElement, cell.GetData(), this._data, this._api);
 
                 this._cells.push(cell);
             });
@@ -93,5 +94,9 @@ export default class OCRow<T> {
 
     public GetBlockIndex(): number {
         return this._blockIndex;
+    }
+
+    public GetCells(): OCCell<T>[] {
+        return this._cells;
     }
 }

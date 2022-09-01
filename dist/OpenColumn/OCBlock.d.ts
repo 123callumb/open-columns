@@ -30,4 +30,5 @@ export default class OCBlock<T> {
     GetRow(index: number): OCRow<T>;
     private GetSimulatedRect;
     GetDrawIndex(): number;
+    private PostDraw;
 }

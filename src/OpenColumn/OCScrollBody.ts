@@ -2,7 +2,7 @@ import OCDataHeader from "./OCDataHeader";
 import OCDom from "./OCDom";
 import OpenColumn from "./OpenColumn";
 import OCRow from "./OCRow";
-import OCRowBlock from './OCRowBlock';
+import OCBlock from './OCBlock';
 import { OCScrollerOptions } from "./OCTypes";
 
 export default class OCScrollBody<T>{
@@ -13,7 +13,7 @@ export default class OCScrollBody<T>{
     private readonly _maxBlockCount: number = 6; // temp for now whilst building table
     private _bound?: number;
     private _dyLimit: number;
-    private _blocks: OCRowBlock<T>[] = [];
+    private _blocks: OCBlock<T>[] = [];
 
     constructor(api: OpenColumn<T>, options: OCScrollerOptions, dom: OCDom, header: OCDataHeader<T>) {
         this._api = api;
@@ -98,7 +98,7 @@ export default class OCScrollBody<T>{
 
         // just prefilling with a random number of blocks for testing
         Array(this._maxBlockCount).fill(null).forEach((f, i) => {
-            const block = new OCRowBlock<T>(this._api, this._header, this._dom, i, 10);
+            const block = new OCBlock<T>(this._api, this._header, this._dom, i, 10);
 
             if (i === 0)
                 this._dom.ScrollBody.append(block.GetElement());
@@ -138,7 +138,7 @@ export default class OCScrollBody<T>{
 
             if (lowerBlockPos.y < this._bound) {
                 const newBlockIndex = lowerBlock.GetDrawIndex() + 1;
-                const newBlock = new OCRowBlock<T>(this._api, this._header, this._dom, newBlockIndex, 10);
+                const newBlock = new OCBlock<T>(this._api, this._header, this._dom, newBlockIndex, 10);
                 lowerBlock.SetNextBlock(newBlock);
                 newBlock.Append(lowerBlock);
                 this._blocks.push(newBlock);
@@ -157,7 +157,7 @@ export default class OCScrollBody<T>{
 
             if (upperBlockPos.y > (-this._bound)) {
                 const newBlockIndex = upperBlock.GetDrawIndex() - 1;
-                const newBlock = new OCRowBlock<T>(this._api, this._header, this._dom, newBlockIndex, 10);
+                const newBlock = new OCBlock<T>(this._api, this._header, this._dom, newBlockIndex, 10);
                 newBlock.Prepend(upperBlock);
                 upperBlock.SetPrevBlock(newBlock);
                 this._blocks.unshift(newBlock);

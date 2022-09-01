@@ -17,6 +17,8 @@ export default class OCAttribute {
         // Scrollbody
         ScrollBody_Container: "OC-ScrollBody-Container",
         ScrollBody_Block: "OC-ScrollBody-Block",
+        ScrollBody_Block_Head: "OC-ScrollBody-Block-Head",
+        ScrollBody_Block_Body: "OC-ScrollBody-Block-Body",
         ScrollBody_Row: "OC-ScrollBody-Row",
         ScrollBody_Cell: "OC-ScrollBody-Cell",
 

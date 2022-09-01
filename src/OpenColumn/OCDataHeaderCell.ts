@@ -21,8 +21,16 @@ export default class OCDataHeaderCell<T> {
         return this._element;
     }
 
+    public GetHeaderOptions(): OCDataHeaderOptions<T> {
+        return this._options;
+    }
+
+    public CanRender(){
+        return this._options.propertyName !== null || this._options.preCellRender;
+    }
+
     private Draw() {
-        if (!this._element){
+        if (!this._element) {
             this._element = document.createElement('div');
             this._element.classList.add(OCAttribute.CLASS.Header_Cell);
         }

@@ -5,7 +5,7 @@ import OCDom from "./OCDom";
 import OCRow from "./OCRow";
 import OpenColumn from "./OpenColumn";
 
-export default class OCRowBlock<T> {
+export default class OCBlock<T> {
     private readonly _api: OpenColumn<T>;
     private readonly _header: OCDataHeader<T>;
     private readonly _dom: OCDom;
@@ -13,8 +13,8 @@ export default class OCRowBlock<T> {
     private readonly _rows: OCRow<T>[];
 
     private _element: HTMLElement;
-    private _nextBlock?: OCRowBlock<T>;
-    private _prevBlock?: OCRowBlock<T>;
+    private _nextBlock?: OCBlock<T>;
+    private _prevBlock?: OCBlock<T>;
     private _startIndex?: number;
 
     constructor(api: OpenColumn<T>, header: OCDataHeader<T>, dom: OCDom, drawIndex: number, rowCount: number) {
@@ -49,10 +49,17 @@ export default class OCRowBlock<T> {
         if (!this._element) {
             this._element = document.createElement('table');
             const tbody = document.createElement('tbody');
-            // TODO: At some point, to improve the api, add prev and next rows here
+            const thead = document.createElement('thead');
+            const theadRow = document.createElement('tr');
+            
+            thead.classList.add(OCAttribute.CLASS.ScrollBody_Block_Head);
+            tbody.classList.add(OCAttribute.CLASS.ScrollBody_Block_Body);
+            theadRow.append(...this._header.GetHeaders().filter(f => f.CanRender()).map(m => document.createElement('th')));
+            thead.append(theadRow)
             tbody.append(...this._rows.map(m => m.GetElement()));
-            this._element.append(tbody);
-            this._element.classList.add(OCAttribute.CLASS.ScrollBody_Block)
+
+            this._element.append(thead, tbody);
+            this._element.classList.add(OCAttribute.CLASS.ScrollBody_Block);
             this.SetPosition(0, 0);
         }
     }
@@ -74,7 +81,7 @@ export default class OCRowBlock<T> {
     }
 
     private SetPosition(x: number, y: number) {
-        this._element.style.transform = `translate(${x}px, ${y}px)`; 
+        this._element.style.transform = `translate(${x}px, ${y}px)`;
     }
 
     public GetTranslatedCoords(): { x: number, y: number } {
@@ -91,11 +98,11 @@ export default class OCRowBlock<T> {
         }
     }
 
-    public SetNextBlock(block: OCRowBlock<T>) {
+    public SetNextBlock(block: OCBlock<T>) {
         this._nextBlock = block;
     }
 
-    public SetPrevBlock(block: OCRowBlock<T>) {
+    public SetPrevBlock(block: OCBlock<T>) {
         this._prevBlock = block;
     }
 
@@ -103,7 +110,7 @@ export default class OCRowBlock<T> {
         return this._element;
     }
 
-    public Append(prevBlock: OCRowBlock<T>) {
+    public Append(prevBlock: OCBlock<T>) {
         // Create link refs
         prevBlock.SetNextBlock(this);
         this._prevBlock = prevBlock;
@@ -119,7 +126,7 @@ export default class OCRowBlock<T> {
         scrollBody.append(this._element);
     }
 
-    public Prepend(nextBlock: OCRowBlock<T>) {
+    public Prepend(nextBlock: OCBlock<T>) {
         // Create link
         nextBlock.SetPrevBlock(this);
         this._nextBlock = nextBlock;
@@ -159,5 +166,15 @@ export default class OCRowBlock<T> {
 
     public GetDrawIndex(): number {
         return this._drawIndex;
+    }
+
+
+    private PostDraw() {
+        if (!this._dom.ScrollBody.contains(this._element))
+            Throw("Element was not rendered, cannot call post draw function.");
+
+        this.GetRow(0).GetCells().forEach(cell => {
+
+        });
     }
 }

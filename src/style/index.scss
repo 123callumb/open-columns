@@ -28,13 +28,25 @@
                 position: absolute;
                 border-top: 2px solid greenyellow;
 
-                .OC-ScrollBody-Row {
-                    border-top: 1px dashed rgba(40, 40, 40, 0.3);
-
-                    .OC-ScrollBody-Cell {
-                        border-right: 1px solid rgb(40, 40, 40);
+                .OC-ScrollBody-Block-Head {
+                    height: 0px;
+                    
+                    th {
+                        height: 0px;
                     }
                 }
+
+                .OC-ScrollBody-Block-Body {
+
+                    .OC-ScrollBody-Row {
+                        border-top: 1px dashed rgba(40, 40, 40, 0.3);
+    
+                        .OC-ScrollBody-Cell {
+                            border-right: 1px solid rgb(40, 40, 40);
+                        }
+                    }
+                }
+
             }
         }
     }

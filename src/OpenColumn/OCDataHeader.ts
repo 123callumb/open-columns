@@ -1,6 +1,6 @@
 import OCDataHeaderCell from "./OCDataHeaderCell";
 import OCDom from "./OCDom";
-import { OCDataHeaderOptions, OCHeaderOptions } from "./OCTypes";
+import { OCDataHeaderOptions } from "./OCTypes";
 import OpenColumn from "./OpenColumn";
 
 export default class OCDataHeader<T> {
@@ -9,7 +9,7 @@ export default class OCDataHeader<T> {
     private readonly _dom: OCDom;
     private _headerCells: OCDataHeaderCell<T>[];
 
-    constructor(api: OpenColumn<T>, dom: OCDom, options: string[] | OCDataHeaderOptions<T>[]){
+    constructor(api: OpenColumn<T>, dom: OCDom, options: string[] | OCDataHeaderOptions<T>[]) {
         this._dom = dom;
         this._api = api;
         this._headerOptions = this.CreateHeaders(options);
@@ -20,8 +20,8 @@ export default class OCDataHeader<T> {
         this.Draw();
     }
 
-    private CreateHeaders(headerOptions: string[] | OCDataHeaderOptions<T>[]) : OCDataHeaderOptions<T>[] {
-        if(typeof headerOptions[0] === "object") 
+    private CreateHeaders(headerOptions: string[] | OCDataHeaderOptions<T>[]): OCDataHeaderOptions<T>[] {
+        if (typeof headerOptions[0] === "object")
             return <OCDataHeaderOptions<T>[]>headerOptions;
 
         return headerOptions.map(m => ({
@@ -30,15 +30,15 @@ export default class OCDataHeader<T> {
         }));
     }
 
-    public GetHeaders() : OCDataHeaderCell<T>[] {
+    public GetHeaders(): OCDataHeaderCell<T>[] {
         return this._headerCells;
     }
 
-    public GetHeaderOptions(){
+    public GetHeaderOptions() {
         return this._headerOptions;
     }
 
-    private Draw(){
+    private Draw() {
         // Create cells
         this._headerCells = this._headerOptions.map(m => new OCDataHeaderCell<T>(this._api, m));
 
@@ -56,10 +56,10 @@ export default class OCDataHeader<T> {
             .replace("px", "")
             .replace(")", "");
 
-        return  parseFloat(brokenTranslate);
+        return parseFloat(brokenTranslate);
     }
 
-    public Translate(dX: number) : void {
+    public Translate(dX: number): void {
         const newX = this.GetX() + dX;
         this._dom.Headers.style.transform = `translate(${newX}px)`;
     }

@@ -6,5 +6,7 @@ export default class OCDataHeaderCell<T> {
     private _element;
     constructor(api: OpenColumn<T>, options: OCDataHeaderOptions<T>);
     GetElement(): HTMLElement;
+    GetHeaderOptions(): OCDataHeaderOptions<T>;
+    CanRender(): true | ((data?: unknown, row?: import("./OCRow").default<T>, api?: OpenColumn<T>) => unknown);
     private Draw;
 }

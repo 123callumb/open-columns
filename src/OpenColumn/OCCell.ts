@@ -1,18 +1,19 @@
 import OCAttribute from "./OCAttribute";
+import OCDataHeaderCell from "./OCDataHeaderCell";
 import OCRow from "./OCRow";
 import { OCDataHeaderOptions } from "./OCTypes";
 import OpenColumn from "./OpenColumn";
 
 export default class OCCell<T> {
     private readonly _api: OpenColumn<T>;
-    private readonly _header: OCDataHeaderOptions<T>;
+    private readonly _headerCell: OCDataHeaderCell<T>;
     private readonly _row: OCRow<T>;
     private _element: HTMLElement;
     private _cellData?: unknown;
     private _rawCellData?: unknown;
 
-    constructor(api: OpenColumn<T>, header: OCDataHeaderOptions<T>, row: OCRow<T>) {
-        this._header = header;
+    constructor(api: OpenColumn<T>, header: OCDataHeaderCell<T>, row: OCRow<T>) {
+        this._headerCell = header;
         this._row = row;
         this._api = api;
 
@@ -30,11 +31,12 @@ export default class OCCell<T> {
         }
         
         const rowData = this._row.GetData();
-        this._rawCellData = (rowData && this._header.propertyName) ? (rowData as any)[this._header.propertyName] : null;
+        const headerOptions = this._headerCell.GetHeaderOptions()
+        this._rawCellData = (rowData && headerOptions.propertyName) ? (rowData as any)[headerOptions.propertyName] : null;
         this._cellData = this._rawCellData;
 
-        if (this._header.preCellRender)
-            this._cellData = this._header.preCellRender(this._rawCellData, this._row, this._api);
+        if (headerOptions.preCellRender)
+            this._cellData = headerOptions.preCellRender(this._rawCellData, this._row, this._api);
 
         this._element.innerHTML = "";
         this._element.textContent = `${this._cellData}`;
