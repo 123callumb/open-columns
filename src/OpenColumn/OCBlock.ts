@@ -49,16 +49,16 @@ export default class OCBlock<T> {
         if (!this._element) {
             this._element = document.createElement('table');
             const tbody = document.createElement('tbody');
-            const thead = document.createElement('thead');
-            const theadRow = document.createElement('tr');
+            // const thead = document.createElement('thead');
+            // const theadRow = document.createElement('tr');
             
-            thead.classList.add(OCAttribute.CLASS.ScrollBody_Block_Head);
+            // thead.classList.add(OCAttribute.CLASS.ScrollBody_Block_Head);
             tbody.classList.add(OCAttribute.CLASS.ScrollBody_Block_Body);
-            theadRow.append(...this._header.GetHeaders().filter(f => f.CanRender()).map(m => document.createElement('th')));
-            thead.append(theadRow)
+            // theadRow.append(...this._header.GetHeaders().filter(f => f.CanRender()).map(m => document.createElement('th')));
+            // thead.append(theadRow)
             tbody.append(...this._rows.map(m => m.GetElement()));
 
-            this._element.append(thead, tbody);
+            this._element.append(tbody);
             this._element.classList.add(OCAttribute.CLASS.ScrollBody_Block);
             this.SetPosition(0, 0);
         }
