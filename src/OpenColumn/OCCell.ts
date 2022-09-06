@@ -11,6 +11,7 @@ export default class OCCell<T> {
     private _element: HTMLElement;
     private _cellData?: unknown;
     private _rawCellData?: unknown;
+    private _defaultWidth: number;
 
     constructor(api: OpenColumn<T>, header: OCDataHeaderCell<T>, row: OCRow<T>) {
         this._headerCell = header;
