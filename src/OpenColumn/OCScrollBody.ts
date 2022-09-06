@@ -4,22 +4,25 @@ import OpenColumn from "./OpenColumn";
 import OCRow from "./OCRow";
 import OCBlock from './OCBlock';
 import { OCScrollerOptions } from "./OCTypes";
+import OCDataSource from "./OCDataSource";
 
 export default class OCScrollBody<T>{
     private readonly _dom: OCDom;
     private readonly _api: OpenColumn<T>;
     private readonly _header: OCDataHeader<T>;
     private readonly _options: OCScrollerOptions;
-    private readonly _maxBlockCount: number = 6; // temp for now whilst building table
+    private readonly _dataSource: OCDataSource<T>;
     private _bound?: number;
     private _dyLimit: number;
     private _blocks: OCBlock<T>[] = [];
+    private _blockSize: number = 150;
 
-    constructor(api: OpenColumn<T>, options: OCScrollerOptions, dom: OCDom, header: OCDataHeader<T>) {
+    constructor(api: OpenColumn<T>, options: OCScrollerOptions, dom: OCDom, header: OCDataHeader<T>, dataSource: OCDataSource<T>) {
         this._api = api;
         this._options = options;
         this._dom = dom;
         this._header = header;
+        this._dataSource = dataSource;
 
         this.Init = this.Init.bind(this);
         this.Scroll = this.Scroll.bind(this);
@@ -57,12 +60,13 @@ export default class OCScrollBody<T>{
             dX -= diff;
 
         // might be faster to store this top one as a reference even if it is removed from the array 
-        const topBlock = this._blocks.find(s => s.GetDrawIndex() === 0);
-        if (topBlock && this._dom.ScrollBody.contains(topBlock.GetElement())) {
-            const coords = topBlock.GetTranslatedCoords();
-            const diff = coords.y + dY;
-            if (diff > 0)
-                dY -= diff;
+        const topBlock = this._blocks.find(f => f.GetDrawIndex() === 0);
+        if (topBlock) {
+                const coords = topBlock.GetTranslatedCoords();
+                const diff = coords.y + dY;
+
+                if (diff > 0)
+                    dY -= diff;
         }
 
         // may as well return early if both have been adjusted to a 0 delta
@@ -90,23 +94,19 @@ export default class OCScrollBody<T>{
         // so that users can base it around blocks
         const scrollBodyRect = this._dom.ScrollBody.getBoundingClientRect();
         const scrollHeight = scrollBodyRect.height;
+        
+        // Draw initial block
+        const block = new OCBlock<T>(this._api, this._header, this._dom, this._dataSource, 0, this._blockSize);
+        const blockEl = block.GetElement();
+        this._dom.ScrollBody.append(blockEl);
+        block.PostDraw();     
+        this._blocks.push(block);
+        
         // at setting bounds to 2 x scrollbody height above and below
         // TODO: in future take which ever number is greater, scrollbody height or 
         // block height
-        this._bound = scrollHeight;
+        this._bound = Math.max((scrollHeight * 2), blockEl.clientHeight);
         this._dyLimit = Math.ceil(scrollBodyRect.height);
-
-        // just prefilling with a random number of blocks for testing
-        Array(this._maxBlockCount).fill(null).forEach((f, i) => {
-            const block = new OCBlock<T>(this._api, this._header, this._dom, i, 10);
-
-            if (i === 0)
-                this._dom.ScrollBody.append(block.GetElement());
-            else
-                block.Append(this._blocks[i - 1]);
-
-            this._blocks.push(block);
-        });
     }
 
     public GetRow(blockIndex: number, index: number): OCRow<T> {
@@ -128,6 +128,7 @@ export default class OCScrollBody<T>{
         const lowerBlockPos = lowerBlock.GetTranslatedCoords();
         let modified = false;
 
+        // TODO: Add render limits, no need to render before draw index 0 etc
         if (isScrollingDown) // scroll down
         {
             if (upperBlockPos.y < (-this._bound)) {
@@ -138,14 +139,12 @@ export default class OCScrollBody<T>{
 
             if (lowerBlockPos.y < this._bound) {
                 const newBlockIndex = lowerBlock.GetDrawIndex() + 1;
-                const newBlock = new OCBlock<T>(this._api, this._header, this._dom, newBlockIndex, 10);
+                const newBlock = new OCBlock<T>(this._api, this._header, this._dom, this._dataSource, newBlockIndex, this._blockSize);
                 lowerBlock.SetNextBlock(newBlock);
                 newBlock.Append(lowerBlock);
                 this._blocks.push(newBlock);
                 modified = true;
             }
-
-
         }
         else // scroll up
         {
@@ -157,16 +156,16 @@ export default class OCScrollBody<T>{
 
             if (upperBlockPos.y > (-this._bound)) {
                 const newBlockIndex = upperBlock.GetDrawIndex() - 1;
-                const newBlock = new OCBlock<T>(this._api, this._header, this._dom, newBlockIndex, 10);
+                const newBlock = new OCBlock<T>(this._api, this._header, this._dom, this._dataSource, newBlockIndex, this._blockSize);
                 newBlock.Prepend(upperBlock);
                 upperBlock.SetPrevBlock(newBlock);
                 this._blocks.unshift(newBlock);
                 modified = true;
             }
-        }
-        
+        } 
+
         // If the body is modified then check again for further changes
-        if(modified)
+        if (modified)
             this.UpdateBody(dY);
     }
 }

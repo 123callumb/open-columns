@@ -6,6 +6,7 @@ export default class OCDataHeaderCell<T> {
     private readonly _api: OpenColumn<T>;
     private _options: OCDataHeaderOptions<T>;
     private _element: HTMLElement;
+    private _defaultWidth: number;
 
     constructor(api: OpenColumn<T>, options: OCDataHeaderOptions<T>) {
         this._api = api;
@@ -31,7 +32,7 @@ export default class OCDataHeaderCell<T> {
 
     private Draw() {
         if (!this._element) {
-            this._element = document.createElement('div');
+            this._element = document.createElement('th');
             this._element.classList.add(OCAttribute.CLASS.Header_Cell);
         }
 
@@ -49,5 +50,22 @@ export default class OCDataHeaderCell<T> {
         }
 
         this._element.textContent = this._options.displayName;
+    }
+
+    public SetWidth(px: number){
+        this._element.style.width = `${px}px`;
+    }
+
+    public Append(row: HTMLTableRowElement){
+        row.append(this._element);
+        this.PostAttatch();
+    }
+
+    private PostAttatch(){
+        this._defaultWidth = this._element.clientWidth;
+    }
+
+    public GetDefaultWidth(){
+        return this._defaultWidth;
     }
 }

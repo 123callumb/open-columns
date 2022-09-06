@@ -7,6 +7,7 @@ export default class OCDataHeader<T> {
     private readonly _api: OpenColumn<T>;
     private readonly _headerOptions: OCDataHeaderOptions<T>[];
     private readonly _dom: OCDom;
+    private _element: HTMLTableElement;
     private _headerCells: OCDataHeaderCell<T>[];
 
     constructor(api: OpenColumn<T>, dom: OCDom, options: string[] | OCDataHeaderOptions<T>[]) {
@@ -42,8 +43,15 @@ export default class OCDataHeader<T> {
         // Create cells
         this._headerCells = this._headerOptions.map(m => new OCDataHeaderCell<T>(this._api, m));
 
-        // Append
-        this._dom.Headers.append(...this._headerCells.map(m => m.GetElement()));
+        // Create/Append table header
+        this._element = document.createElement('table');
+        const thead = document.createElement('thead');
+        const tr = document.createElement('tr');
+        thead.append(tr);
+        this._element.append(thead);
+        this._dom.Headers.append(this._element);
+        // Append header cells after wrapper rendered
+        this._headerCells.map(m => m.Append(tr));
 
         // Style
         this._dom.Headers.style.transform = `translate(${0}px)`;

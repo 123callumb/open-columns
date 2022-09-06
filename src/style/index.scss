@@ -2,6 +2,11 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    
+    table {
+        border-collapse: collapse !important;
+        border-spacing: 0 !important;
+    }
 
     .OC-Headers-Container {
         min-height: 4px;
@@ -26,11 +31,10 @@
 
             .OC-ScrollBody-Block {
                 position: absolute;
-                border-top: 2px solid greenyellow;
 
                 .OC-ScrollBody-Block-Head {
                     height: 0px;
-                    
+
                     th {
                         height: 0px;
                     }

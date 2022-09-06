@@ -20,4 +20,5 @@ export default class OCRow<T> {
     GetRowIndex(): number;
     GetBlockIndex(): number;
     GetCells(): OCCell<T>[];
+    Detatch(): void;
 }

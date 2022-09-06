@@ -4,9 +4,9 @@ import OCRow from "./OCRow";
 import OpenColumn from "./OpenColumn";
 export interface OpenColumnOptions<T> {
     selector: string | HTMLElement;
+    dataSource: OCDataSourceOptions<T>;
     headers?: string[] | OCDataHeaderOptions<T>[];
     parentHeaders?: string[] | OCHeaderOptions<T>[];
-    data?: OCDataOptions<T>;
     deferInitialRequest?: boolean;
     scroller?: OCScrollerOptions;
 }
@@ -22,13 +22,18 @@ export interface OCDataHeaderOptions<T> extends OCHeaderOptions<T> {
     preCellRender?: (data?: unknown, row?: OCRow<T>, api?: OpenColumn<T>) => unknown;
     postCellRender?: (cell: HTMLElement, data?: unknown, rowData?: T, api?: OpenColumn<T>) => void;
 }
-export interface OCDataOptions<T, Request = OCDataRequest, Response = OCDataResponse<T>> {
+export interface OCDataSourceOptions<T> {
+    serverSide: boolean;
+    serverOptions?: OCServerSideOptions<T>;
+    clientData?: T[];
+}
+export interface OCServerSideOptions<T, Request = OCDataRequest, Response = OCDataResponse<T>> {
     url?: string;
     method?: 'GET' | 'POST';
-    headers?: string[];
-    overrideRequest?: (api?: OpenColumn) => Response | Promise<Response>;
-    preRequest?: (request: Request, api?: OpenColumn) => Request;
-    postRequest?: (data: Response, api?: OpenColumn) => Response;
+    headers?: HeadersInit;
+    overrideRequest?: (api?: OpenColumn<T>) => Response | Promise<Response>;
+    preRequest?: (request: Request, api?: OpenColumn<T>) => Request;
+    postRequest?: (data: Response, api?: OpenColumn<T>) => Response;
 }
 export interface OCDataRequest {
     skip: number;
@@ -39,7 +44,7 @@ export interface OCDataResponse<T> {
     data: T[];
     skip: number;
     totalRowCount?: number;
-    filtersRefreshed: boolean;
+    filtersRefreshed?: boolean;
 }
 export interface OCRowOptions<T> {
     blockIndex: number;

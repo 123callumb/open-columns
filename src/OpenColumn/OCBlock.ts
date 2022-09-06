@@ -1,6 +1,7 @@
 import { Throw } from "../util/HelperFunctions";
 import OCAttribute from "./OCAttribute";
 import OCDataHeader from "./OCDataHeader";
+import OCDataSource from "./OCDataSource";
 import OCDom from "./OCDom";
 import OCRow from "./OCRow";
 import OpenColumn from "./OpenColumn";
@@ -10,18 +11,19 @@ export default class OCBlock<T> {
     private readonly _header: OCDataHeader<T>;
     private readonly _dom: OCDom;
     private readonly _drawIndex: number;
-    private readonly _rows: OCRow<T>[];
+    private readonly _dataSource: OCDataSource<T>;
+    private _rows: OCRow<T>[];
 
     private _element: HTMLElement;
     private _nextBlock?: OCBlock<T>;
     private _prevBlock?: OCBlock<T>;
-    private _startIndex?: number;
 
-    constructor(api: OpenColumn<T>, header: OCDataHeader<T>, dom: OCDom, drawIndex: number, rowCount: number) {
+    constructor(api: OpenColumn<T>, header: OCDataHeader<T>, dom: OCDom, dataSource: OCDataSource<T>, drawIndex: number, rowCount: number) {
         this._api = api;
         this._header = header;
         this._dom = dom;
         this._drawIndex = drawIndex;
+        this._dataSource = dataSource;
         this._rows = Array(rowCount).fill(null).map((m, i) => new OCRow<T>({
             index: i,
             blockIndex: drawIndex,
@@ -33,6 +35,7 @@ export default class OCBlock<T> {
         this.Draw = this.Draw.bind(this);
         this.Append = this.Append.bind(this);
         this.Prepend = this.Prepend.bind(this);
+        this.PostDraw = this.PostDraw.bind(this);
         this.Translate = this.Translate.bind(this);
         this.GetElement = this.GetElement.bind(this);
         this.UpdateData = this.UpdateData.bind(this);
@@ -40,6 +43,7 @@ export default class OCBlock<T> {
         this.SetNextBlock = this.SetNextBlock.bind(this);
         this.SetPrevBlock = this.SetPrevBlock.bind(this);
         this.GetSimulatedRect = this.GetSimulatedRect.bind(this);
+        this.RippleColumnWidths = this.RippleColumnWidths.bind(this);
         this.GetTranslatedCoords = this.GetTranslatedCoords.bind(this);
 
         this.Draw();
@@ -51,7 +55,7 @@ export default class OCBlock<T> {
             const tbody = document.createElement('tbody');
             // const thead = document.createElement('thead');
             // const theadRow = document.createElement('tr');
-            
+
             // thead.classList.add(OCAttribute.CLASS.ScrollBody_Block_Head);
             tbody.classList.add(OCAttribute.CLASS.ScrollBody_Block_Body);
             // theadRow.append(...this._header.GetHeaders().filter(f => f.CanRender()).map(m => document.createElement('th')));
@@ -64,13 +68,13 @@ export default class OCBlock<T> {
         }
     }
 
-    public UpdateData(data: T[], startIndex: number) {
+    public UpdateData(data: T[]) {
         // Catch this in the response classes validation - not here
         if (data.length !== this._rows.length)
             Throw("The data returned from the server was not the same length as the rows in the table, data loss or incorrect rendering will occur - operation cancelled.")
 
-        this._startIndex = startIndex;
         this._rows.forEach((f, i) => f.Update(data[i]));
+        this.RippleColumnWidths();
     }
 
     public Translate(dX: number, dY: number) {
@@ -124,6 +128,8 @@ export default class OCBlock<T> {
 
         // Add to dom
         scrollBody.append(this._element);
+
+        this.PostDraw();
     }
 
     public Prepend(nextBlock: OCBlock<T>) {
@@ -141,14 +147,15 @@ export default class OCBlock<T> {
 
         // Add to dom
         scrollBody.prepend(this._element);
+
+        this.PostDraw();
+
     }
 
     public Detatch() {
-        const scrollBody = this._dom.ScrollBody;
-        if (!scrollBody.contains(this._element))
-            Throw("Cannot detatch element that does not exist in the scrollbody.");
-
-        scrollBody.removeChild(this._element);
+        this._rows.forEach(f => f.Detatch());
+        delete this._rows;
+        this._element.remove();
     }
 
     public GetRow(index: number): OCRow<T> {
@@ -168,13 +175,32 @@ export default class OCBlock<T> {
         return this._drawIndex;
     }
 
-
-    private PostDraw() {
+    public PostDraw() {
         if (!this._dom.ScrollBody.contains(this._element))
             Throw("Element was not rendered, cannot call post draw function.");
 
-        this.GetRow(0).GetCells().forEach(cell => {
+        // need to resize cols before data gets there or it'll look bad
+        this.RippleColumnWidths();
 
+        // Fetch data - update data will call ripple col widths
+        this._dataSource.GetData(this._drawIndex).then(this.UpdateData);
+    }
+
+    // TODO: Look at a better way of doing this in the future performance wise
+    // maybe having the actual functionality in the header.
+    // Hmm this wont work as intended because if a new header w is set that's bigger
+    // than before then it wont push to all the other blocks.
+    private RippleColumnWidths() {
+        this.GetRow(0).GetCells().forEach(cell => {
+            const header = cell.GetHeader();
+            const headerW = header.GetDefaultWidth();
+            const cellW = cell.GetElement().clientWidth;
+            const newW = Math.max(cellW, headerW);
+
+            if (newW > headerW)
+                header.SetWidth(newW);
+
+            cell.SetWidth(newW);
         });
     }
 }

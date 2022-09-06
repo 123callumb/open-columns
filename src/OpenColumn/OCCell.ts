@@ -49,4 +49,16 @@ export default class OCCell<T> {
     public GetElement() {
         return this._element;
     }
+
+    public GetHeader(){
+        return this._headerCell;
+    }
+
+    public SetWidth(px: number){
+        this._element.style.width = `${px}px`;
+    }
+
+    public Detatch(){
+        this._element.remove();
+    }
 }

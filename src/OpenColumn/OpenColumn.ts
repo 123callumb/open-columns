@@ -6,6 +6,7 @@ import OCHorizontalScrollBar from './OCHorizontalScrollBar';
 import OCVerticalScrollBar from './OCVerticalScrollBar';
 import { Throw, OnDomReady } from '../util/HelperFunctions';
 import OCRow from './OCRow';
+import OCDataSource from './OCDataSource';
 
 export default class OpenColumn<T = unknown> {
     private readonly _options: OpenColumnOptions<T>;
@@ -14,6 +15,7 @@ export default class OpenColumn<T = unknown> {
     private _header: OCDataHeader<T>;
     private _horizontalScrollBar: OCHorizontalScrollBar<T>;
     private _verticalScrollBar: OCVerticalScrollBar<T>;
+    private _dataSource: OCDataSource<T>;
 
     constructor(options: OpenColumnOptions<T>) {
         this._options = options;
@@ -29,7 +31,8 @@ export default class OpenColumn<T = unknown> {
 
         this._dom = new OCDom(this._options.selector);
         this._header = new OCDataHeader(this, this._dom, this._options.headers);
-        this._scrollBody = new OCScrollBody(this, this._options.scroller, this._dom, this._header);
+        this._dataSource = new OCDataSource<T>(this, this._options.dataSource, 150);
+        this._scrollBody = new OCScrollBody(this, this._options.scroller, this._dom, this._header, this._dataSource);
         this._horizontalScrollBar = new OCHorizontalScrollBar(this, this._dom);
         this._verticalScrollBar = new OCVerticalScrollBar(this, this._dom);
     }

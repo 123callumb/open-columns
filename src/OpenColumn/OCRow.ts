@@ -99,4 +99,10 @@ export default class OCRow<T> {
     public GetCells(): OCCell<T>[] {
         return this._cells;
     }
+
+    public Detatch(){
+        this._cells.forEach(f => f.Detatch());
+        delete this._cells;
+        this._element.remove();
+    }
 }

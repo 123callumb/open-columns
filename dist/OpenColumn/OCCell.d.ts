@@ -12,4 +12,7 @@ export default class OCCell<T> {
     Draw(): void;
     GetData(): unknown;
     GetElement(): HTMLElement;
+    GetHeader(): OCDataHeaderCell<T>;
+    SetWidth(px: number): void;
+    Detatch(): void;
 }
