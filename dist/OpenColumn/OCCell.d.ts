@@ -8,6 +8,7 @@ export default class OCCell<T> {
     private _element;
     private _cellData?;
     private _rawCellData?;
+    private _defaultWidth;
     constructor(api: OpenColumn<T>, header: OCDataHeaderCell<T>, row: OCRow<T>);
     Draw(): void;
     GetData(): unknown;

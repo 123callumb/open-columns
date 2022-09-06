@@ -74,10 +74,13 @@ export default class OCDataSource<T> {
     }
     
     private GetClientSideData(drawIndex: number): OCDataResponse<T> {
+        const skip = drawIndex * this._blockSize;
+        const data = this._options.clientData?.slice(skip, skip + this._blockSize) ?? [];
+
         return {
-            data: this._options.clientData?.slice(drawIndex * this._blockSize, this._blockSize) ?? [],
+            data,
             totalRowCount: this._options.clientData?.length ?? 0,
-            skip: this._blockSize
+            skip
         };
     }
     

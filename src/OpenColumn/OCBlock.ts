@@ -1,4 +1,4 @@
-import { Throw } from "../util/HelperFunctions";
+import { Throw, Warn } from "../util/HelperFunctions";
 import OCAttribute from "./OCAttribute";
 import OCDataHeader from "./OCDataHeader";
 import OCDataSource from "./OCDataSource";
@@ -71,7 +71,7 @@ export default class OCBlock<T> {
     public UpdateData(data: T[]) {
         // Catch this in the response classes validation - not here
         if (data.length !== this._rows.length)
-            Throw("The data returned from the server was not the same length as the rows in the table, data loss or incorrect rendering will occur - operation cancelled.")
+            Warn("The data returned from the server was not the same length as the rows in the table, data loss or incorrect rendering will occur - operation cancelled.")
 
         this._rows.forEach((f, i) => f.Update(data[i]));
         this.RippleColumnWidths();
