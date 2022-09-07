@@ -25,12 +25,12 @@ export default class OCBlock<T> {
     SetNextBlock(block: OCBlock<T>): void;
     SetPrevBlock(block: OCBlock<T>): void;
     GetElement(): HTMLElement;
+    Attatch(scrollBody: HTMLElement): void;
     Append(prevBlock: OCBlock<T>): void;
     Prepend(nextBlock: OCBlock<T>): void;
     Detatch(): void;
     GetRow(index: number): OCRow<T>;
     private GetSimulatedRect;
     GetDrawIndex(): number;
-    PostDraw(): void;
-    private RippleColumnWidths;
+    ShuffleUp(): void;
 }

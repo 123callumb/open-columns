@@ -27,7 +27,7 @@ export default class OCCell<T> {
 
     public Draw() {
         if (!this._element){
-            this._element = document.createElement('td');
+            this._element = document.createElement('div');
             this._element.classList.add(OCAttribute.CLASS.ScrollBody_Cell);
         }
         
@@ -39,6 +39,7 @@ export default class OCCell<T> {
         if (headerOptions.preCellRender)
             this._cellData = headerOptions.preCellRender(this._rawCellData, this._row, this._api);
 
+        this._element.style.width = `${this._headerCell.GetDefaultWidth()}px`;
         this._element.innerHTML = "";
         this._element.textContent = `${this._cellData}`;
     }

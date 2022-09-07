@@ -97,15 +97,13 @@ export default class OCScrollBody<T>{
         
         // Draw initial block
         const block = new OCBlock<T>(this._api, this._header, this._dom, this._dataSource, 0, this._blockSize);
-        const blockEl = block.GetElement();
-        this._dom.ScrollBody.append(blockEl);
-        block.PostDraw();     
+        block.Attatch(this._dom.ScrollBody);
         this._blocks.push(block);
         
         // at setting bounds to 2 x scrollbody height above and below
         // TODO: in future take which ever number is greater, scrollbody height or 
         // block height
-        this._bound = Math.max((scrollHeight * 2), blockEl.clientHeight);
+        this._bound = Math.max((scrollHeight * 2), block.GetElement().clientHeight);
         this._dyLimit = Math.ceil(scrollBodyRect.height);
     }
 

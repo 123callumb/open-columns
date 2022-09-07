@@ -35,7 +35,6 @@ export default class OCBlock<T> {
         this.Draw = this.Draw.bind(this);
         this.Append = this.Append.bind(this);
         this.Prepend = this.Prepend.bind(this);
-        this.PostDraw = this.PostDraw.bind(this);
         this.Translate = this.Translate.bind(this);
         this.GetElement = this.GetElement.bind(this);
         this.UpdateData = this.UpdateData.bind(this);
@@ -43,7 +42,6 @@ export default class OCBlock<T> {
         this.SetNextBlock = this.SetNextBlock.bind(this);
         this.SetPrevBlock = this.SetPrevBlock.bind(this);
         this.GetSimulatedRect = this.GetSimulatedRect.bind(this);
-        this.RippleColumnWidths = this.RippleColumnWidths.bind(this);
         this.GetTranslatedCoords = this.GetTranslatedCoords.bind(this);
 
         this.Draw();
@@ -51,18 +49,8 @@ export default class OCBlock<T> {
 
     private Draw() {
         if (!this._element) {
-            this._element = document.createElement('table');
-            const tbody = document.createElement('tbody');
-            // const thead = document.createElement('thead');
-            // const theadRow = document.createElement('tr');
-
-            // thead.classList.add(OCAttribute.CLASS.ScrollBody_Block_Head);
-            tbody.classList.add(OCAttribute.CLASS.ScrollBody_Block_Body);
-            // theadRow.append(...this._header.GetHeaders().filter(f => f.CanRender()).map(m => document.createElement('th')));
-            // thead.append(theadRow)
-            tbody.append(...this._rows.map(m => m.GetElement()));
-
-            this._element.append(tbody);
+            this._element = document.createElement('div');
+            this._element.append(...this._rows.map(m => m.GetElement()));
             this._element.classList.add(OCAttribute.CLASS.ScrollBody_Block);
             this.SetPosition(0, 0);
         }
@@ -74,7 +62,8 @@ export default class OCBlock<T> {
             Warn("The data returned from the server was not the same length as the rows in the table, data loss or incorrect rendering will occur - operation cancelled.")
 
         this._rows.forEach((f, i) => f.Update(data[i]));
-        this.RippleColumnWidths();
+
+        // Update dom position 
     }
 
     public Translate(dX: number, dY: number) {
@@ -114,22 +103,30 @@ export default class OCBlock<T> {
         return this._element;
     }
 
+    public Attatch(scrollBody: HTMLElement){
+        if(scrollBody.childElementCount)
+            Throw("Can only use Attatch() to add a block to an empty scroll body.");
+        
+        scrollBody.append(this._element);
+        this._dataSource.GetData(this._drawIndex).then(this.UpdateData);
+    }
+
     public Append(prevBlock: OCBlock<T>) {
         // Create link refs
         prevBlock.SetNextBlock(this);
         this._prevBlock = prevBlock;
 
         // Set pos
-        const prevRect = prevBlock.GetElement().getBoundingClientRect();
-        const scrollBody = this._dom.ScrollBody;
-        const scrollBodyY = scrollBody.getBoundingClientRect().y;
+        const prevBlockHeight = prevBlock.GetElement().getBoundingClientRect().height;
+        const prevBlockPos = prevBlock.GetTranslatedCoords();
         const currentX = this._header.GetX();
-        this.SetPosition(currentX, prevRect.bottom - scrollBodyY);
+        this.SetPosition(currentX, prevBlockHeight + prevBlockPos.y);
 
         // Add to dom
-        scrollBody.append(this._element);
+        this._dom.ScrollBody.append(this._element);
 
-        this.PostDraw();
+        // Fetch data - i think we can get away without shuffling
+        this._dataSource.GetData(this._drawIndex).then(this.UpdateData);
     }
 
     public Prepend(nextBlock: OCBlock<T>) {
@@ -138,18 +135,20 @@ export default class OCBlock<T> {
         this._nextBlock = nextBlock;
 
         // Set position in scrollbody
-        const nextRect = this._nextBlock.GetElement().getBoundingClientRect();
+        const nextBlockPos = this._nextBlock.GetTranslatedCoords();
         const currentX = this._header.GetX();
-        const scrollBody = this._dom.ScrollBody;
-        const scrollBodyY = scrollBody.getBoundingClientRect().y;
         const simRect = this.GetSimulatedRect();
-        this.SetPosition(currentX, nextRect.top - simRect.height - scrollBodyY);
+        console.log(`Block height at prepend: ${simRect.height}, placed at pos ${nextBlockPos.y}`)
+        this.SetPosition(currentX, nextBlockPos.y - simRect.height);
 
         // Add to dom
-        scrollBody.prepend(this._element);
+        this._dom.ScrollBody.prepend(this._element);
 
-        this.PostDraw();
-
+        // Fetch data - shuffle upwards 
+        this._dataSource.GetData(this._drawIndex).then((data) => {
+            this.UpdateData(data);
+            this.ShuffleUp();
+        });
     }
 
     public Detatch() {
@@ -175,32 +174,17 @@ export default class OCBlock<T> {
         return this._drawIndex;
     }
 
-    public PostDraw() {
-        if (!this._dom.ScrollBody.contains(this._element))
-            Throw("Element was not rendered, cannot call post draw function.");
+    // This gets the blocks position in the table and makes sure it is not overlapping
+    // Call a shuffle when you know block size has been modified
+    public ShuffleUp() {
+        if (!this._nextBlock)
+            Throw("Cannot shuffle up as there is no block below the current block.");
 
-        // need to resize cols before data gets there or it'll look bad
-        this.RippleColumnWidths();
+        const nextBlockPos = this._nextBlock.GetTranslatedCoords();
+        const blockHeight = this._element.getBoundingClientRect().height;
+        this.SetPosition(nextBlockPos.x, nextBlockPos.y - blockHeight);
 
-        // Fetch data - update data will call ripple col widths
-        this._dataSource.GetData(this._drawIndex).then(this.UpdateData);
-    }
-
-    // TODO: Look at a better way of doing this in the future performance wise
-    // maybe having the actual functionality in the header.
-    // Hmm this wont work as intended because if a new header w is set that's bigger
-    // than before then it wont push to all the other blocks.
-    private RippleColumnWidths() {
-        this.GetRow(0).GetCells().forEach(cell => {
-            const header = cell.GetHeader();
-            const headerW = header.GetDefaultWidth();
-            const cellW = cell.GetElement().clientWidth;
-            const newW = Math.max(cellW, headerW);
-
-            if (newW > headerW)
-                header.SetWidth(newW);
-
-            cell.SetWidth(newW);
-        });
+        if (this._prevBlock)
+            this._prevBlock.ShuffleUp();
     }
 }

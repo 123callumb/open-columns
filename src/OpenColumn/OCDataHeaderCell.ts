@@ -32,7 +32,7 @@ export default class OCDataHeaderCell<T> {
 
     private Draw() {
         if (!this._element) {
-            this._element = document.createElement('th');
+            this._element = document.createElement('div');
             this._element.classList.add(OCAttribute.CLASS.Header_Cell);
         }
 
@@ -56,13 +56,14 @@ export default class OCDataHeaderCell<T> {
         this._element.style.width = `${px}px`;
     }
 
-    public Append(row: HTMLTableRowElement){
+    public Append(row: HTMLElement){
         row.append(this._element);
         this.PostAttatch();
     }
 
     private PostAttatch(){
-        this._defaultWidth = this._element.clientWidth;
+        this._defaultWidth = this._element.getBoundingClientRect().width;
+        this._element.style.width = `${this._defaultWidth}px`;
     }
 
     public GetDefaultWidth(){

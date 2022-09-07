@@ -42,7 +42,7 @@ export default class OCRow<T> {
 
     private Draw(refresh: boolean = false) {
         if (!this._element) {
-            this._element = document.createElement('tr');
+            this._element = document.createElement('div');
             this._element.classList.add(OCAttribute.CLASS.ScrollBody_Row);
         }
 

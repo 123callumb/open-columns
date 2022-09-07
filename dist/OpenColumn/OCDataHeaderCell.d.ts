@@ -11,7 +11,7 @@ export default class OCDataHeaderCell<T> {
     CanRender(): true | ((data?: unknown, row?: import("./OCRow").default<T>, api?: OpenColumn<T>) => unknown);
     private Draw;
     SetWidth(px: number): void;
-    Append(row: HTMLTableRowElement): void;
+    Append(row: HTMLElement): void;
     private PostAttatch;
     GetDefaultWidth(): number;
 }
