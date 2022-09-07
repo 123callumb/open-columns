@@ -15,7 +15,7 @@ export default class OCScrollBody<T>{
     private _bound?: number;
     private _dyLimit: number;
     private _blocks: OCBlock<T>[] = [];
-    private _blockSize: number = 150;
+    private _blockSize: number = 100;
 
     constructor(api: OpenColumn<T>, options: OCScrollerOptions, dom: OCDom, header: OCDataHeader<T>, dataSource: OCDataSource<T>) {
         this._api = api;
@@ -45,11 +45,21 @@ export default class OCScrollBody<T>{
     }
 
     public Scroll(dX: number, dY: number) {
-        if (Math.abs(dX) <= (this._options?.sensX ?? 0))
+        const absDX = Math.abs(dX);
+        const absDY = Math.abs(dY);
+
+        if (absDX <= (this._options?.sensX ?? 0))
             dX = 0;
 
-        if (Math.abs(dY) <= (this._options?.sensY ?? 0))
+        if (absDY <= (this._options?.sensY ?? 0))
             dY = 0;
+
+        // Sorta scroll lock to make it feel more blocky
+        // should allow disabling of this 
+        if (absDX > absDY)
+            dY = 0;
+        else
+            dX = 0;
 
         // Hard limits here for scrollbody - TODO: should change to a nice smooth bounce animation
         // if you try to scrol out of bounds to make it feel more responsive, obviously can disable
@@ -62,11 +72,11 @@ export default class OCScrollBody<T>{
         // might be faster to store this top one as a reference even if it is removed from the array 
         const topBlock = this._blocks.find(f => f.GetDrawIndex() === 0);
         if (topBlock) {
-                const coords = topBlock.GetTranslatedCoords();
-                const diff = coords.y + dY;
+            const coords = topBlock.GetTranslatedCoords();
+            const diff = coords.y + dY;
 
-                if (diff > 0)
-                    dY -= diff;
+            if (diff > 0)
+                dY -= diff;
         }
 
         // may as well return early if both have been adjusted to a 0 delta
@@ -94,16 +104,16 @@ export default class OCScrollBody<T>{
         // so that users can base it around blocks
         const scrollBodyRect = this._dom.ScrollBody.getBoundingClientRect();
         const scrollHeight = scrollBodyRect.height;
-        
+
         // Draw initial block
         const block = new OCBlock<T>(this._api, this._header, this._dom, this._dataSource, 0, this._blockSize);
         block.Attatch(this._dom.ScrollBody);
         this._blocks.push(block);
-        
+
         // at setting bounds to 2 x scrollbody height above and below
         // TODO: in future take which ever number is greater, scrollbody height or 
         // block height
-        this._bound = Math.max((scrollHeight * 2), block.GetElement().clientHeight);
+        this._bound = block.GetElement().clientHeight + scrollHeight;
         this._dyLimit = Math.ceil(scrollBodyRect.height);
     }
 
@@ -160,7 +170,7 @@ export default class OCScrollBody<T>{
                 this._blocks.unshift(newBlock);
                 modified = true;
             }
-        } 
+        }
 
         // If the body is modified then check again for further changes
         if (modified)

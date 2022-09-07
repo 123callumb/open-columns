@@ -138,7 +138,6 @@ export default class OCBlock<T> {
         const nextBlockPos = this._nextBlock.GetTranslatedCoords();
         const currentX = this._header.GetX();
         const simRect = this.GetSimulatedRect();
-        console.log(`Block height at prepend: ${simRect.height}, placed at pos ${nextBlockPos.y}`)
         this.SetPosition(currentX, nextBlockPos.y - simRect.height);
 
         // Add to dom
