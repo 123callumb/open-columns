@@ -1,16 +1,19 @@
 import { NameOf, Throw, Warn } from '../util/HelperFunctions';
+import OCScrollBody from './OCScrollBody';
 import { OCDataRequest, OCDataResponse, OCDataSourceOptions, OCServerSideOptions } from './OCTypes';
 import OpenColumn from './OpenColumn';
 
 export default class OCDataSource<T> {
     private readonly _options: OCDataSourceOptions<T>;
     private readonly _api: OpenColumn<T>;
+    private readonly _scrollBody: OCScrollBody<T>;
     private _blockSize: number;
 
-    constructor(api: OpenColumn<T>, options: OCDataSourceOptions<T>, blockSize: number) {
+    constructor(api: OpenColumn<T>, options: OCDataSourceOptions<T>, blockSize: number, scrollBody: OCScrollBody<T>) {
         this._api = api;
         this._options = options;
         this._blockSize = blockSize;
+        this._scrollBody = scrollBody;
 
         this.ValidateDataSource = this.ValidateDataSource.bind(this);
 

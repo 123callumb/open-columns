@@ -16,6 +16,7 @@ export default class OCScrollBody<T>{
     private _dyLimit: number;
     private _blocks: OCBlock<T>[] = [];
     private _blockSize: number = 100;
+    private _scrollLocked: boolean = true;
 
     constructor(api: OpenColumn<T>, options: OCScrollerOptions, dom: OCDom, header: OCDataHeader<T>, dataSource: OCDataSource<T>) {
         this._api = api;
@@ -44,7 +45,22 @@ export default class OCScrollBody<T>{
         this.Scroll(e.deltaX, e.deltaY * -1); // invert scroll here if user wants that
     }
 
+    public LockScroll() {
+        this._scrollLocked = true;
+    }
+
+    public UnlockScroll() {
+        this._scrollLocked = false;
+    }
+
+    public IsLocked(){
+        return this._scrollLocked;
+    }
+
     public Scroll(dX: number, dY: number) {
+        if (this._scrollLocked)
+            return;
+
         const absDX = Math.abs(dX);
         const absDY = Math.abs(dY);
 
@@ -78,6 +94,8 @@ export default class OCScrollBody<T>{
             if (diff > 0)
                 dY -= diff;
         }
+
+        const bottomBlock = this._blocks.find(f => f.GetDrawIndex() === this._blockSize)
 
         // may as well return early if both have been adjusted to a 0 delta
         if (dX === 0 && dY === 0)

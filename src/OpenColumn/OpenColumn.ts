@@ -31,7 +31,7 @@ export default class OpenColumn<T = unknown> {
 
         this._dom = new OCDom(this._options.selector);
         this._header = new OCDataHeader(this, this._dom, this._options.headers);
-        this._dataSource = new OCDataSource<T>(this, this._options.dataSource, 150);
+        this._dataSource = new OCDataSource<T>(this, this._options.dataSource, 100, this._scrollBody);
         this._scrollBody = new OCScrollBody(this, this._options.scroller, this._dom, this._header, this._dataSource);
         this._horizontalScrollBar = new OCHorizontalScrollBar(this, this._dom);
         this._verticalScrollBar = new OCVerticalScrollBar(this, this._dom);
