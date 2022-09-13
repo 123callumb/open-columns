@@ -17,6 +17,7 @@ export default class OCScrollBody<T>{
     private _blocks: OCBlock<T>[] = [];
     private _blockSize: number = 100;
     private _scrollLocked: boolean = true;
+    private _blockLimit?: number;
 
     constructor(api: OpenColumn<T>, options: OCScrollerOptions, dom: OCDom, header: OCDataHeader<T>, dataSource: OCDataSource<T>) {
         this._api = api;
@@ -29,6 +30,8 @@ export default class OCScrollBody<T>{
         this.Scroll = this.Scroll.bind(this);
         this.GetRow = this.GetRow.bind(this);
         this.OnScroll = this.OnScroll.bind(this);
+        this.LockScroll = this.LockScroll.bind(this);
+        this.UnlockScroll = this.UnlockScroll.bind(this);
         this.RegisterEvents = this.RegisterEvents.bind(this);
 
         this.Init();
@@ -53,7 +56,7 @@ export default class OCScrollBody<T>{
         this._scrollLocked = false;
     }
 
-    public IsLocked(){
+    public IsLocked() {
         return this._scrollLocked;
     }
 
@@ -125,7 +128,10 @@ export default class OCScrollBody<T>{
 
         // Draw initial block
         const block = new OCBlock<T>(this._api, this._header, this._dom, this._dataSource, 0, this._blockSize);
-        block.Attatch(this._dom.ScrollBody);
+        block.Attatch(this._dom.ScrollBody, (totalRowCount: number) => {
+            this.UnlockScroll();
+            this._blockLimit = ((totalRowCount + (totalRowCount % this._blockSize)) / this._blockSize) - 1;
+        });
         this._blocks.push(block);
 
         // at setting bounds to 2 x scrollbody height above and below
@@ -163,8 +169,8 @@ export default class OCScrollBody<T>{
                 modified = true;
             }
 
-            if (lowerBlockPos.y < this._bound) {
-                const newBlockIndex = lowerBlock.GetDrawIndex() + 1;
+            const newBlockIndex = lowerBlock.GetDrawIndex() + 1;
+            if (newBlockIndex < this._blockLimit && lowerBlockPos.y < this._bound) {
                 const newBlock = new OCBlock<T>(this._api, this._header, this._dom, this._dataSource, newBlockIndex, this._blockSize);
                 lowerBlock.SetNextBlock(newBlock);
                 newBlock.Append(lowerBlock);
@@ -180,8 +186,8 @@ export default class OCScrollBody<T>{
                 modified = true;
             }
 
-            if (upperBlockPos.y > (-this._bound)) {
-                const newBlockIndex = upperBlock.GetDrawIndex() - 1;
+            const newBlockIndex = upperBlock.GetDrawIndex() - 1;
+            if (newBlockIndex >= 0 && upperBlockPos.y > (-this._bound)) {
                 const newBlock = new OCBlock<T>(this._api, this._header, this._dom, this._dataSource, newBlockIndex, this._blockSize);
                 newBlock.Prepend(upperBlock);
                 upperBlock.SetPrevBlock(newBlock);

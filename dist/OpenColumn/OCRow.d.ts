@@ -4,7 +4,7 @@ export default class OCRow<T> {
     private readonly _api;
     private readonly _header;
     private readonly _blockIndex;
-    private readonly _index;
+    private _index;
     private _element;
     private _prevRow?;
     private _nextRow?;
@@ -13,7 +13,7 @@ export default class OCRow<T> {
     constructor(options: OCRowOptions<T>);
     GetElement(): HTMLElement;
     private Draw;
-    Update(data: T): void;
+    Update(data: T, rowIndex: number): void;
     GetData(): T;
     SetNextRow(row: OCRow<T>): void;
     SetPrevRow(row: OCRow<T>): void;

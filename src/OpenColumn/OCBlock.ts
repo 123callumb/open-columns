@@ -58,11 +58,11 @@ export default class OCBlock<T> {
 
     public UpdateData(data: T[]) {
         // Catch this in the response classes validation - not here
-        if (data.length !== this._rows.length)
-            Warn("The data returned from the server was not the same length as the rows in the table, data loss or incorrect rendering will occur - operation cancelled.")
+        if (data.length > this._rows.length)
+            Throw(`Too many rows of data puhed into the block, there are ${this._rows.length} rows. ${data.length} is too many.`)
 
-        this._rows.forEach((f, i) => f.Update(data[i]));
-
+        this._rows.splice(data.length - 1, this._rows.length - data.length).forEach(row => row.Detatch());
+        this._rows.forEach((f, i) => f.Update(data[i], i));
         // Update dom position 
     }
 
@@ -103,12 +103,16 @@ export default class OCBlock<T> {
         return this._element;
     }
 
-    public Attatch(scrollBody: HTMLElement){
+    public Attatch(scrollBody: HTMLElement, postLoadCallback: (totalRowCount?: number) => void){
         if(scrollBody.childElementCount)
             Throw("Can only use Attatch() to add a block to an empty scroll body.");
         
         scrollBody.append(this._element);
-        this._dataSource.GetData(this._drawIndex).then(this.UpdateData);
+
+        this._dataSource.GetData(this._drawIndex).then((res) => {
+            this.UpdateData(res.data);
+            postLoadCallback(res.totalRowCount);
+        });
     }
 
     public Append(prevBlock: OCBlock<T>) {
@@ -126,7 +130,7 @@ export default class OCBlock<T> {
         this._dom.ScrollBody.append(this._element);
 
         // Fetch data - i think we can get away without shuffling
-        this._dataSource.GetData(this._drawIndex).then(this.UpdateData);
+        this._dataSource.GetData(this._drawIndex).then((res) => this.UpdateData(res.data));
     }
 
     public Prepend(nextBlock: OCBlock<T>) {
@@ -144,8 +148,8 @@ export default class OCBlock<T> {
         this._dom.ScrollBody.prepend(this._element);
 
         // Fetch data - shuffle upwards 
-        this._dataSource.GetData(this._drawIndex).then((data) => {
-            this.UpdateData(data);
+        this._dataSource.GetData(this._drawIndex).then((res) => {
+            this.UpdateData(res.data);
             this.ShuffleUp();
         });
     }

@@ -33,7 +33,7 @@ export default class OCCell<T> {
         
         const rowData = this._row.GetData();
         const headerOptions = this._headerCell.GetHeaderOptions()
-        this._rawCellData = (rowData && headerOptions.propertyName) ? (rowData as any)[headerOptions.propertyName] : null;
+        this._rawCellData = (rowData && headerOptions.propertyName) ? (rowData as any)[headerOptions.propertyName] : "";
         this._cellData = this._rawCellData;
 
         if (headerOptions.preCellRender)

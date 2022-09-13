@@ -31,15 +31,11 @@ export default class OCDataSource<T> {
             Warn(`Both client side and server side data configurations were found - using ${this._options.serverSide ? "server" : "client"} side data.`);
     }
 
-    public async GetData(drawIndex: number): Promise<T[]> {
-        let dataBlock;
-
+    public async GetData(drawIndex: number): Promise<OCDataResponse<T>> {
         if (this._options.serverSide)
-            dataBlock = await this.LoadServerSideData(drawIndex);
+            return await this.LoadServerSideData(drawIndex);
         else
-            dataBlock = this.GetClientSideData(drawIndex);
-
-        return dataBlock.data;
+            return this.GetClientSideData(drawIndex);
     }
 
     private async LoadServerSideData(drawIndex: number): Promise<OCDataResponse<T>> {

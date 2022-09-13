@@ -8,7 +8,7 @@ export default class OCRow<T> {
     private readonly _api: OpenColumn<T>;
     private readonly _header: OCDataHeader<T>;
     private readonly _blockIndex: number;
-    private readonly _index: number;
+    private _index: number;
     private _element: HTMLElement;
     private _prevRow?: OCRow<T>;
     private _nextRow?: OCRow<T>;
@@ -70,8 +70,9 @@ export default class OCRow<T> {
         }
     }
 
-    public Update(data: T) {
+    public Update(data: T, rowIndex: number) {
         this._data = data;
+        this._index = rowIndex;
 
         this.Draw();
     }
