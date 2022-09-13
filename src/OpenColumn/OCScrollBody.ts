@@ -103,10 +103,10 @@ export default class OCScrollBody<T>{
             const blockHeight = bottomBlock.GetHeight();
             const bottomY = bottomBlock.GetTranslatedCoords().y + blockHeight;
             const scrollBodyHeight = this._dom.ScrollBody.getBoundingClientRect().height;
-            const diff = (bottomY + dY);
+            const diff = scrollBodyHeight - (bottomY + dY);
 
-            if(diff < scrollBodyHeight){
-                dY += scrollBodyHeight - diff;
+            if(diff > 0){
+                dY += diff;
             }
         }
 
