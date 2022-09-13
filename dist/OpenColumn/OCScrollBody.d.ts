@@ -10,6 +10,8 @@ export default class OCScrollBody<T> {
     private readonly _header;
     private readonly _options;
     private readonly _dataSource;
+    private _horizontalScrollbar?;
+    private _verticalScrollbar?;
     private _bound?;
     private _dyLimit;
     private _blocks;

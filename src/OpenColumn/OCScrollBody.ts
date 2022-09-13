@@ -5,6 +5,8 @@ import OCRow from "./OCRow";
 import OCBlock from './OCBlock';
 import { OCScrollerOptions } from "./OCTypes";
 import OCDataSource from "./OCDataSource";
+import OCHorizontalScrollBar from "./OCHorizontalScrollBar";
+import OCVerticalScrollBar from "./OCVerticalScrollBar";
 
 export default class OCScrollBody<T>{
     private readonly _dom: OCDom;
@@ -12,6 +14,8 @@ export default class OCScrollBody<T>{
     private readonly _header: OCDataHeader<T>;
     private readonly _options: OCScrollerOptions;
     private readonly _dataSource: OCDataSource<T>;
+    private _horizontalScrollbar?: OCHorizontalScrollBar<T>;
+    private _verticalScrollbar?: OCVerticalScrollBar<T>;
     private _bound?: number;
     private _dyLimit: number;
     private _blocks: OCBlock<T>[] = [];
@@ -133,6 +137,7 @@ export default class OCScrollBody<T>{
         // Set bounds
         // TODO: Set these bounds based on the average row/block height
         // so that users can base it around blocks
+        this._horizontalScrollbar = new OCHorizontalScrollBar(this._api, this._dom, this._header);
         const scrollBodyRect = this._dom.ScrollBody.getBoundingClientRect();
         const scrollHeight = scrollBodyRect.height;
 
@@ -141,6 +146,7 @@ export default class OCScrollBody<T>{
         block.Attatch(this._dom.ScrollBody, (totalRowCount: number) => {
             this.UnlockScroll();
             this._blockLimit = (totalRowCount - (totalRowCount % this._blockSize)) / this._blockSize;
+            this._verticalScrollbar = new OCVerticalScrollBar(this._api, this._dom, totalRowCount, 40);
         });
         this._blocks.push(block);
 

@@ -8,6 +8,7 @@ export default class OCScrollBar<T> {
     protected _barElement: HTMLElement;
     protected _buttonStart: HTMLElement;
     protected _buttonEnd: HTMLElement;
+    protected _cellHeight: number;
     constructor(api: OpenColumn<T>, dom: OCDom, domContainer: HTMLElement);
     private Init;
     protected Translate(dX: number, dY: number): void;

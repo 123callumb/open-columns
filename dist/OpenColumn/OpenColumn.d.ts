@@ -5,8 +5,6 @@ export default class OpenColumn<T = unknown> {
     private _dom;
     private _scrollBody;
     private _header;
-    private _horizontalScrollBar;
-    private _verticalScrollBar;
     private _dataSource;
     constructor(options: OpenColumnOptions<T>);
     private Init;
