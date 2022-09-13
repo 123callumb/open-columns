@@ -17,6 +17,8 @@ export default class OCBlock<T> {
     private _element: HTMLElement;
     private _nextBlock?: OCBlock<T>;
     private _prevBlock?: OCBlock<T>;
+    private _width?: number;
+    private _height?: number;
 
     constructor(api: OpenColumn<T>, header: OCDataHeader<T>, dom: OCDom, dataSource: OCDataSource<T>, drawIndex: number, rowCount: number) {
         this._api = api;
@@ -35,6 +37,9 @@ export default class OCBlock<T> {
         this.Draw = this.Draw.bind(this);
         this.Append = this.Append.bind(this);
         this.Prepend = this.Prepend.bind(this);
+        this.GetWidth = this.GetWidth.bind(this);
+        this.GetHeight = this.GetHeight.bind(this);
+        this.UpdateRect = this.UpdateRect.bind(this);
         this.Translate = this.Translate.bind(this);
         this.GetElement = this.GetElement.bind(this);
         this.UpdateData = this.UpdateData.bind(this);
@@ -63,7 +68,9 @@ export default class OCBlock<T> {
 
         this._rows.splice(data.length - 1, this._rows.length - data.length).forEach(row => row.Detatch());
         this._rows.forEach((f, i) => f.Update(data[i], i));
-        // Update dom position 
+
+        // Update dom vals
+        this.UpdateRect();
     }
 
     public Translate(dX: number, dY: number) {
@@ -91,6 +98,14 @@ export default class OCBlock<T> {
         }
     }
 
+    public GetHeight() : number {
+        return this._height;
+    }
+
+    public GetWidth() : number {
+        return this._width;
+    }
+
     public SetNextBlock(block: OCBlock<T>) {
         this._nextBlock = block;
     }
@@ -108,6 +123,8 @@ export default class OCBlock<T> {
             Throw("Can only use Attatch() to add a block to an empty scroll body.");
         
         scrollBody.append(this._element);
+        const newRect = this._element.getClientRects();
+        this._height
 
         this._dataSource.GetData(this._drawIndex).then((res) => {
             this.UpdateData(res.data);
@@ -128,6 +145,7 @@ export default class OCBlock<T> {
 
         // Add to dom
         this._dom.ScrollBody.append(this._element);
+        this.UpdateRect();
 
         // Fetch data - i think we can get away without shuffling
         this._dataSource.GetData(this._drawIndex).then((res) => this.UpdateData(res.data));
@@ -146,6 +164,7 @@ export default class OCBlock<T> {
 
         // Add to dom
         this._dom.ScrollBody.prepend(this._element);
+        this.UpdateRect();
 
         // Fetch data - shuffle upwards 
         this._dataSource.GetData(this._drawIndex).then((res) => {
@@ -189,5 +208,11 @@ export default class OCBlock<T> {
 
         if (this._prevBlock)
             this._prevBlock.ShuffleUp();
+    }
+
+    private UpdateRect(){
+        const currentRect = this._element.getBoundingClientRect();
+        this._width = currentRect.width;
+        this._height = currentRect.height;
     }
 }

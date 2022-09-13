@@ -13,6 +13,8 @@ export default class OCBlock<T> {
     private _element;
     private _nextBlock?;
     private _prevBlock?;
+    private _width?;
+    private _height?;
     constructor(api: OpenColumn<T>, header: OCDataHeader<T>, dom: OCDom, dataSource: OCDataSource<T>, drawIndex: number, rowCount: number);
     private Draw;
     UpdateData(data: T[]): void;
@@ -22,6 +24,8 @@ export default class OCBlock<T> {
         x: number;
         y: number;
     };
+    GetHeight(): number;
+    GetWidth(): number;
     SetNextBlock(block: OCBlock<T>): void;
     SetPrevBlock(block: OCBlock<T>): void;
     GetElement(): HTMLElement;
@@ -33,4 +37,5 @@ export default class OCBlock<T> {
     private GetSimulatedRect;
     GetDrawIndex(): number;
     ShuffleUp(): void;
+    private UpdateRect;
 }
