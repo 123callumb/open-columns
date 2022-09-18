@@ -42,7 +42,7 @@ export default class OCVerticalScrollBar<T> extends OCScrollBar<T> {
         if (!this._isDragging)
             return;
 
-        this.TranslateBar(0, e.movementY);
+        this.TranslateBar(e.movementY);
     }
 
     public SetAverageRowHeight(average: number) {

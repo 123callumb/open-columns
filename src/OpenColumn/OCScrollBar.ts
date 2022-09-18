@@ -56,13 +56,13 @@ export default class OCScrollBar<T> {
         const contRect = this._barContainer.getBoundingClientRect();
         const maxBound = this._isVertical ? contRect.height : contRect.width;
         
-        if(newPos <= 0)
-            newPos = 0;
+        // if(newPos <= 0)
+        //     newPos = 0;
         
-        if(newPos >= maxBound)
-            newPos = maxBound;
+        // if(newPos >= maxBound)
+        //     newPos = maxBound;
 
-        //this._barElement.style.transform = `translate(${this._}px, ${pos.y + dY}px)`;
+        this._barElement.style.transform = this._isVertical ? `translate(0px, ${newPos}px)` : `translate(${newPos}px, 0px)`;
     }
 
     protected GetTranslatedBarCoords(): { x: number, y: number } {
