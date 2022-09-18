@@ -24,8 +24,12 @@ export default class OCScrollBody<T> {
     LockScroll(): void;
     UnlockScroll(): void;
     IsLocked(): boolean;
-    Scroll(dX: number, dY: number): void;
+    Scroll(dX: number, dY: number): boolean;
     private Init;
     GetRow(blockIndex: number, index: number): OCRow<T>;
     private UpdateBody;
+    private PrependBlock;
+    private AppendBlock;
+    private DetatchTopBlock;
+    private DetatchBottomBlock;
 }

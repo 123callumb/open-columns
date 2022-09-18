@@ -1,11 +1,12 @@
 import { Throw } from '../util/HelperFunctions';
 import OCAttribute from './OCAttribute';
 import OCDom from './OCDom';
+import OCScrollBody from './OCScrollBody';
 import OpenColumn from './OpenColumn';
 
-export default class OCScrollBar<T> {
+export default abstract class OCScrollBar<T> {
     protected readonly _api: OpenColumn<T>;
-    protected readonly _dom: OCDom;
+    protected readonly _scrollBody: OCScrollBody<T>;
     protected _container: HTMLElement;
     protected _barContainer: HTMLElement;
     protected _barElement: HTMLElement;
@@ -14,10 +15,11 @@ export default class OCScrollBar<T> {
     protected _cellHeight: number;
     private _isVertical: boolean;
     private _isDragging: boolean = false;
+    protected abstract PreBarMove(newPos: number, delta: number): boolean;
 
-    constructor(api: OpenColumn<T>, dom: OCDom, domContainer: HTMLElement) {
+    constructor(api: OpenColumn<T>, scrollBody: OCScrollBody<T>, domContainer: HTMLElement) {
         this._api = api;
-        this._dom = dom;
+        this._scrollBody = scrollBody;
         this._container = domContainer;
 
         this.Init = this.Init.bind(this);
@@ -93,6 +95,9 @@ export default class OCScrollBar<T> {
 
         if(newPos >= maxBound)
             newPos = maxBound;
+
+        if(this.PreBarMove && !this.PreBarMove(newPos, delta))
+            return;
 
         this._barElement.style.transform = this._isVertical ? `translate(0px, ${newPos}px)` : `translate(${newPos}px, 0px)`;
     }

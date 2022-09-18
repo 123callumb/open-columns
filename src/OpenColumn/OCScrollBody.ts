@@ -64,9 +64,9 @@ export default class OCScrollBody<T>{
         return this._scrollLocked;
     }
 
-    public Scroll(dX: number, dY: number) {
+    public Scroll(dX: number, dY: number) : boolean {
         if (this._scrollLocked)
-            return;
+            return false;
 
         const absDX = Math.abs(dX);
         const absDY = Math.abs(dY);
@@ -116,7 +116,7 @@ export default class OCScrollBody<T>{
 
         // may as well return early if both have been adjusted to a 0 delta
         if (dX === 0 && dY === 0)
-            return;
+            return false;
 
         this._header.Translate(dX);
         this._blocks.forEach(block => {
@@ -125,19 +125,21 @@ export default class OCScrollBody<T>{
         });
 
         if (dY === 0)
-            return;
+            return false;
 
         if (Math.abs(dY) > this._dyLimit)
             dY = dY < 0 ? -this._dyLimit : this._dyLimit;
 
         this.UpdateBody(dY);
+
+        return true;
     }
 
     private Init() {
         // Set bounds
         // TODO: Set these bounds based on the average row/block height
         // so that users can base it around blocks
-        this._horizontalScrollbar = new OCHorizontalScrollBar(this._api, this._dom, this._header);
+        this._horizontalScrollbar = new OCHorizontalScrollBar(this._api, this, this._dom.HorizontalScrollBar, this._header);
         const scrollBodyRect = this._dom.ScrollBody.getBoundingClientRect();
         const scrollHeight = scrollBodyRect.height;
 
@@ -146,7 +148,7 @@ export default class OCScrollBody<T>{
         block.Attatch(this._dom.ScrollBody, (totalRowCount: number) => {
             this.UnlockScroll();
             this._blockLimit = (totalRowCount - (totalRowCount % this._blockSize)) / this._blockSize;
-            this._verticalScrollbar = new OCVerticalScrollBar(this._api, this._dom, totalRowCount, 40);
+            this._verticalScrollbar = new OCVerticalScrollBar(this._api, this, this._dom.VerticalScrollBar, totalRowCount, 40);
         });
         this._blocks.push(block);
 
@@ -215,5 +217,23 @@ export default class OCScrollBody<T>{
         // If the body is modified then check again for further changes
         if (modified)
             this.UpdateBody(dY);
+    }
+
+    // TODO laterrrrrr, should clean scroll function up a bit? 
+    // or possibly add more processing lol 
+    private PrependBlock(){
+        
+    }
+
+    private AppendBlock(){
+
+    }
+
+    private DetatchTopBlock(){
+
+    }
+
+    private DetatchBottomBlock(){
+
     }
 }

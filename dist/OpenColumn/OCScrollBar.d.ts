@@ -1,8 +1,8 @@
-import OCDom from './OCDom';
+import OCScrollBody from './OCScrollBody';
 import OpenColumn from './OpenColumn';
-export default class OCScrollBar<T> {
+export default abstract class OCScrollBar<T> {
     protected readonly _api: OpenColumn<T>;
-    protected readonly _dom: OCDom;
+    protected readonly _scrollBody: OCScrollBody<T>;
     protected _container: HTMLElement;
     protected _barContainer: HTMLElement;
     protected _barElement: HTMLElement;
@@ -11,7 +11,8 @@ export default class OCScrollBar<T> {
     protected _cellHeight: number;
     private _isVertical;
     private _isDragging;
-    constructor(api: OpenColumn<T>, dom: OCDom, domContainer: HTMLElement);
+    protected abstract PreBarMove(newPos: number, delta: number): boolean;
+    constructor(api: OpenColumn<T>, scrollBody: OCScrollBody<T>, domContainer: HTMLElement);
     private Init;
     private RegisterEvents;
     private OnMouseDown;
