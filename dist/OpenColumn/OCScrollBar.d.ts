@@ -10,8 +10,13 @@ export default class OCScrollBar<T> {
     protected _buttonEnd: HTMLElement;
     protected _cellHeight: number;
     private _isVertical;
+    private _isDragging;
     constructor(api: OpenColumn<T>, dom: OCDom, domContainer: HTMLElement);
     private Init;
+    private RegisterEvents;
+    private OnMouseDown;
+    private OnMouseUp;
+    private OnMouseMove;
     protected TranslateBar(delta: number): void;
     protected GetTranslatedBarCoords(): {
         x: number;

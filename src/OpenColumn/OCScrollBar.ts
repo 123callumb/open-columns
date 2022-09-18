@@ -13,6 +13,7 @@ export default class OCScrollBar<T> {
     protected _buttonEnd: HTMLElement;
     protected _cellHeight: number;
     private _isVertical: boolean;
+    private _isDragging: boolean = false;
 
     constructor(api: OpenColumn<T>, dom: OCDom, domContainer: HTMLElement) {
         this._api = api;
@@ -20,10 +21,15 @@ export default class OCScrollBar<T> {
         this._container = domContainer;
 
         this.Init = this.Init.bind(this);
+        this.OnMouseUp = this.OnMouseUp.bind(this);
+        this.OnMouseMove = this.OnMouseMove.bind(this);
+        this.OnMouseDown = this.OnMouseDown.bind(this);
         this.TranslateBar = this.TranslateBar.bind(this);
+        this.RegisterEvents = this.RegisterEvents.bind(this);
         this.GetTranslatedBarCoords = this.GetTranslatedBarCoords.bind(this);
-
+        
         this.Init();
+        this.RegisterEvents();
     }
 
     private Init() {
@@ -50,17 +56,43 @@ export default class OCScrollBar<T> {
         this._isVertical = barStyle.flexDirection.includes("column") || barStyle.direction.includes("column");
     }
 
+    private RegisterEvents() {
+        this._barElement.addEventListener('mousedown', this.OnMouseDown);
+        window.addEventListener('mouseup', this.OnMouseUp);
+        window.addEventListener('mousemove', this.OnMouseMove);
+    }
+
+    private OnMouseDown(e: MouseEvent) {
+        this._isDragging = true;
+    }
+
+    private OnMouseUp(e: MouseEvent) {
+        if (!this._isDragging)
+            return;
+
+        this._isDragging = false;
+    }
+
+    private OnMouseMove(e: MouseEvent) {
+        if (!this._isDragging)
+            return;
+
+        const mouseDelta = this._isVertical ? e.movementY : e.movementX;
+        this.TranslateBar(mouseDelta);
+    }
+
     protected TranslateBar(delta: number) {
         const pos = this.GetTranslatedBarCoords();
-        let newPos = this._isVertical ? pos.x + delta : pos.y + delta;
+        let newPos = this._isVertical ? pos.y + delta : pos.x + delta;
         const contRect = this._barContainer.getBoundingClientRect();
-        const maxBound = this._isVertical ? contRect.height : contRect.width;
-        
-        // if(newPos <= 0)
-        //     newPos = 0;
-        
-        // if(newPos >= maxBound)
-        //     newPos = maxBound;
+        const barRect = this._barElement.getBoundingClientRect();
+        const maxBound = this._isVertical ? contRect.height - barRect.height : contRect.width - barRect.width;
+
+        if(newPos <= 0)
+            newPos = 0;
+
+        if(newPos >= maxBound)
+            newPos = maxBound;
 
         this._barElement.style.transform = this._isVertical ? `translate(0px, ${newPos}px)` : `translate(${newPos}px, 0px)`;
     }
