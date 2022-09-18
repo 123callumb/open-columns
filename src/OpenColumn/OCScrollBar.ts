@@ -12,23 +12,30 @@ export default class OCScrollBar<T> {
     protected _buttonStart: HTMLElement;
     protected _buttonEnd: HTMLElement;
     protected _cellHeight: number;
+    private _isVertical: boolean;
 
     constructor(api: OpenColumn<T>, dom: OCDom, domContainer: HTMLElement) {
         this._api = api;
         this._dom = dom;
         this._container = domContainer;
 
+        this.Init = this.Init.bind(this);
+        this.TranslateBar = this.TranslateBar.bind(this);
+        this.GetTranslatedBarCoords = this.GetTranslatedBarCoords.bind(this);
+
         this.Init();
     }
 
     private Init() {
-        if(!this._container)
+        if (!this._container)
             Throw("Cannot create scrollbar as the container is not initialised.");
 
         this._barContainer = document.createElement('div');
         this._barElement = document.createElement('div');
         this._buttonStart = document.createElement('div');
         this._buttonEnd = document.createElement('div');
+
+        this._barElement.style.transform = `translate(${0}px, ${0}px)`;
 
         this._container.classList.add(OCAttribute.CLASS.ScrollBar);
         this._barContainer.classList.add(OCAttribute.CLASS.ScrollBar_Container);
@@ -38,19 +45,32 @@ export default class OCScrollBar<T> {
 
         this._barContainer.append(this._barElement);
         this._container.append(this._buttonStart, this._barContainer, this._buttonEnd);
+
+        const barStyle = window.getComputedStyle(this._container);
+        this._isVertical = barStyle.flexDirection.includes("column") || barStyle.direction.includes("column");
     }
 
-    protected Translate(dX: number, dY: number) {
+    protected TranslateBar(delta: number) {
         const pos = this.GetTranslatedBarCoords();
-        this._barElement.style.transform = `translate(${pos.x + dX}px, ${pos.y + dY})`;
+        let newPos = this._isVertical ? pos.x + delta : pos.y + delta;
+        const contRect = this._barContainer.getBoundingClientRect();
+        const maxBound = this._isVertical ? contRect.height : contRect.width;
+        
+        if(newPos <= 0)
+            newPos = 0;
+        
+        if(newPos >= maxBound)
+            newPos = maxBound;
+
+        //this._barElement.style.transform = `translate(${this._}px, ${pos.y + dY}px)`;
     }
 
     protected GetTranslatedBarCoords(): { x: number, y: number } {
         // TODO: maybe move to a shared method...used elsewhere :)
         // Using replace to see if it is faster than new WebKitCSSMatrix(style.transform);
-        const brokenTranslate = this._container.style.transform
+        const brokenTranslate = this._barElement.style.transform
             .replace("translate(", "")
-            .replace("px", "")
+            .replaceAll("px", "")
             .replace(")", "")
             .split(',');
 

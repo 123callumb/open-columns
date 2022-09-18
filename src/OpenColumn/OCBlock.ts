@@ -88,7 +88,7 @@ export default class OCBlock<T> {
         // Using replace to see if it is faster than new WebKitCSSMatrix(style.transform);
         const brokenTranslate = this._element.style.transform
             .replace("translate(", "")
-            .replace("px", "")
+            .replaceAll("px", "")
             .replace(")", "")
             .split(',');
 
@@ -123,8 +123,6 @@ export default class OCBlock<T> {
             Throw("Can only use Attatch() to add a block to an empty scroll body.");
         
         scrollBody.append(this._element);
-        const newRect = this._element.getClientRects();
-        this._height
 
         this._dataSource.GetData(this._drawIndex).then((res) => {
             this.UpdateData(res.data);

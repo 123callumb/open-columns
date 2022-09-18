@@ -11,7 +11,12 @@
         "sourceMap": false,
         "outDir": "dist",
         "esModuleInterop": true,
-        "baseUrl": "./"
+        "baseUrl": "./",
+        "lib": [
+            "ES2021.String",
+            "DOM",
+            "ES6"
+        ]
     },
     "exclude": [
         "node_modules",
